@@ -1,0 +1,29 @@
+{
+  "type": "panel",
+  "name": "Gantt",
+  "id": "marcusolsson-gantt-panel",
+
+  "info": {
+    "description": "Gantt visualization for Grafana",
+    "author": {
+      "name": "Marcus Olsson"
+    },
+    "keywords": ["panel", "gantt"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {"name": "Website", "url": "https://github.com/marcusolsson/grafana-gantt-panel"},
+      {"name": "License", "url": "https://github.com/marcusolsson/grafana-gantt-panel/blob/master/LICENSE"}
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+
+  "dependencies": {
+    "grafanaDependency": ">=7.3.0",
+    "plugins": []
+  }
+}
