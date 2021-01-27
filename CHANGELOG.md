@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0 (2020-01-27)
+
+### Enhancements
+
+- Allow using string and number fields as time ([#1](https://github.com/marcusolsson/grafana-gantt-panel/issues/1), [#2](https://github.com/marcusolsson/grafana-gantt-panel/issues/2))
+
 ## 0.1.0 (2020-01-08)
 
 Initial release. Not fit for production use.
