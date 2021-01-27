@@ -27,3 +27,8 @@ This section lists the available configuration options for the Gantt panel.
 | _Start time_ | Name of the field to use for value. Defaults to the first time field. |
 | _End time_ | Name of the field to use for value. Defaults to the second time field. |
 | _Group by_ | Name of the field to use to group activities. When grouping activities, the time interval is set to the start of the first activity and the end of the last activity in the group. |
+
+As some data sources don't yet support time fields, the plugin supports selecting string and number fields as start and end time:
+
+- If you select a string field, values need to be ISO 8601 strings
+- If you select a number field, values need to be Unix timestamps in milliseconds
