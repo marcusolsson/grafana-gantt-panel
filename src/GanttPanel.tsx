@@ -21,8 +21,10 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
     setGroup(selectableValue.value);
   };
 
+  // TODO: Support multiple data frames.
   const frame = data.series[0];
 
+  // Display help text if no data was found.
   if (!frame) {
     return (
       <div style={{ width, height, overflow: 'hidden' }}>
@@ -83,6 +85,7 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
     );
   }
 
+  // Group row indexes by the value in the groupBy field.
   const groups: { [value: string]: number[] } = groupByField
     ? groupByField.values.toArray().reduce((acc, curr, idx) => {
         if (!acc[curr]) {
@@ -105,8 +108,26 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
       ? groups[currentGroup]
       : textField.values.toArray().map((_, idx) => idx);
 
+  // Sort rows by start time.
   const sortedIndexes = indexes.sort((a, b) => {
-    return startField.values.get(a) - startField.values.get(b);
+    if (startField.type === FieldType.time || startField.type === FieldType.number) {
+      return startField.values.get(a) - startField.values.get(b);
+    }
+
+    if (startField.type === FieldType.string) {
+      const startDateTime = dateTimeParse(startField.values.get(a));
+      const endDateTime = dateTimeParse(startField.values.get(b));
+
+      if (startDateTime.isBefore(endDateTime)) {
+        return -1;
+      } else if (endDateTime.isBefore(startDateTime)) {
+        return 1;
+      }
+      return 0;
+    }
+
+    // Should never get here, but if we do, leave order as is.
+    return a - b;
   });
 
   // Find the time range based on the earliest start time and the latest end time.

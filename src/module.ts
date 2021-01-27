@@ -13,7 +13,7 @@ export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig()
       editor: FieldSelectEditor,
       category: ['Dimensions'],
       settings: {
-        filterByType: FieldType.string,
+        filterByType: [FieldType.string],
       },
     })
     .addCustomEditor({
@@ -24,7 +24,7 @@ export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig()
       editor: FieldSelectEditor,
       category: ['Dimensions'],
       settings: {
-        filterByType: FieldType.time,
+        filterByType: [FieldType.time, FieldType.string, FieldType.number],
       },
     })
     .addCustomEditor({
@@ -35,7 +35,7 @@ export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig()
       editor: FieldSelectEditor,
       category: ['Dimensions'],
       settings: {
-        filterByType: FieldType.time,
+        filterByType: [FieldType.time, FieldType.string, FieldType.number],
       },
     })
     .addCustomEditor({
@@ -46,7 +46,7 @@ export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig()
       editor: FieldSelectEditor,
       category: ['Dimensions'],
       settings: {
-        filterByType: FieldType.string,
+        filterByType: [FieldType.string],
       },
     });
 });
