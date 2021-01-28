@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2020-01-28)
+
+### Enhancements
+
+- Null values are interpreted as infinity
+- Add duration to tooltip
+- Improved styles
+
 ## 0.2.0 (2020-01-27)
 
 ### Enhancements
