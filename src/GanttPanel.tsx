@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { FieldType, PanelProps, dateTimeParse, DateTime, SelectableValue } from '@grafana/data';
-import { GanttOptions } from 'types';
 import { css, cx } from 'emotion';
-import { stylesFactory, useTheme, InfoBox, Select } from '@grafana/ui';
 import * as d3 from 'd3';
 import Tippy from '@tippyjs/react';
-import 'tippy.js/dist/tippy.css';
 
+import humanizeDuration from 'humanize-duration';
+
+import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, SelectableValue } from '@grafana/data';
+import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select } from '@grafana/ui';
+
+import { GanttOptions } from './types';
 import { measureText } from './helpers';
 
 interface Props extends PanelProps<GanttOptions> {}
@@ -147,8 +149,7 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
   ];
 
   const activityLabels = [...new Set(sortedIndexes.map(_ => textField.values.get(_)))];
-
-  const widestLabel = d3.max(activityLabels.map(measureText)) ?? 0;
+  const widestLabel = d3.max(activityLabels.map(_ => measureText(_, theme.typography.size.sm))) ?? 0;
 
   const padding = {
     left: 10 + widestLabel,
@@ -173,7 +174,10 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
     .domain(activityLabels)
     .range([0, chartHeight]);
 
-  const axisX = d3.axisBottom(absoluteScaleX);
+  const range = absoluteScaleX.domain();
+  const format = graphTimeFormat(absoluteScaleX.ticks().length, range[0].valueOf(), range[1].valueOf());
+
+  const axisX = d3.axisBottom(absoluteScaleX).tickFormat(d => dateTimeFormat(d as number, { format, timeZone }));
   const axisY = d3.axisLeft(scaleY);
 
   return (
@@ -194,12 +198,14 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
           <g>
             {sortedIndexes.map(i => {
               const label = textField.values.get(i);
+              const startTimeValue = startField.values.get(i);
+              const endTimeValue = endField.values.get(i);
 
-              const startTime = dateTimeParse(startField.values.get(i), { timeZone });
-              const endTime = dateTimeParse(endField.values.get(i), { timeZone });
+              const startTime = dateTimeParse(startTimeValue, { timeZone });
+              const endTime = dateTimeParse(endTimeValue, { timeZone });
 
-              const pixelStartX = Math.max(absoluteScaleX(startTime.toDate()), 0);
-              const pixelEndX = Math.min(absoluteScaleX(endTime.toDate()), chartWidth);
+              const pixelStartX = startTimeValue ? Math.max(absoluteScaleX(startTime.toDate()), 0) : 0;
+              const pixelEndX = endTimeValue ? Math.min(absoluteScaleX(endTime.toDate()), chartWidth) : chartWidth;
 
               const barPadding = 2;
               const activityBarWidth = Math.max(pixelEndX - pixelStartX - 2, 1);
@@ -210,16 +216,53 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
                 y: scaleY(label),
               };
 
+              const tooltipStyles = {
+                root: css`
+                  border-radius: ${theme.border.radius.md};
+                  background-color: ${theme.colors.bg2};
+                  padding: ${theme.spacing.sm};
+                  box-shadow: 0px 0px 20px ${theme.colors.dropdownShadow};
+                `,
+                header: css`
+                  font-weight: ${theme.typography.weight.semibold};
+                  font-size: ${theme.typography.size.md};
+                  margin-bottom: ${theme.spacing.sm};
+                  color: ${theme.colors.text};
+                `,
+                value: css`
+                  font-size: ${theme.typography.size.md};
+                  margin-bottom: ${theme.spacing.xs};
+                `,
+                faint: css`
+                  font-size: ${theme.typography.size.md};
+                  margin-bottom: ${theme.spacing.xs};
+                  color: ${theme.colors.textSemiWeak};
+                `,
+              };
+
               const tooltipContent = (
                 <div>
-                  <p>{label}</p>
-                  <div>Started at: {startField.display!(startField.values.get(i)).text}</div>
-                  <div>Ended at: {endField.display!(endField.values.get(i)).text}</div>
+                  <div className={tooltipStyles.header}>{label}</div>
+                  {startTimeValue && (
+                    <div className={tooltipStyles.value}>Started at: {startField.display!(startTimeValue).text}</div>
+                  )}
+                  {endTimeValue && (
+                    <div className={tooltipStyles.value}>Ended at: {endField.display!(endTimeValue).text}</div>
+                  )}
+                  <div className={tooltipStyles.faint}>
+                    {humanizeDuration((endTimeValue || Date.now()) - startTimeValue, { largest: 2 })}
+                  </div>
                 </div>
               );
 
               return (
-                <Tippy content={tooltipContent} key={i} placement="bottom" animation={false}>
+                <Tippy
+                  content={tooltipContent}
+                  key={i}
+                  placement="bottom"
+                  animation={false}
+                  className={tooltipStyles.root}
+                >
                   <rect
                     fill={'rgb(115, 191, 105)'}
                     x={activityBarPos.x}
@@ -238,12 +281,20 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
             ref={node => {
               d3.select(node).call(axisX as any);
             }}
+            className={css`
+              font-family: ${theme.typography.fontFamily.sansSerif};
+              font-size: ${theme.typography.size.sm};
+            `}
           />
           <g
             transform={`translate(${padding.left}, 0)`}
             ref={node => {
               d3.select(node).call(axisY as any);
             }}
+            className={css`
+              font-family: ${theme.typography.fontFamily.sansSerif};
+              font-size: ${theme.typography.size.sm};
+            `}
           />
         </svg>
       </div>

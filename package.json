@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "@tippyjs/react": "^4.1.0",
+    "@types/humanize-duration": "^3.18.1",
+    "humanize-duration": "^3.25.1",
     "moment-duration-format": "^2.3.2"
   }
 }
