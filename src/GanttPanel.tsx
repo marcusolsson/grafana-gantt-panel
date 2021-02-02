@@ -9,7 +9,7 @@ import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, Selecta
 import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select } from '@grafana/ui';
 
 import { GanttOptions } from './types';
-import { measureText } from './helpers';
+import { measureText, ensureTimeField } from './helpers';
 
 interface Props extends PanelProps<GanttOptions> {}
 
@@ -55,13 +55,18 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
     ? frame.fields.find(f => f.name === options.textField)
     : frame.fields.find(f => f.type === FieldType.string);
 
-  const startField = options.startField
-    ? frame.fields.find(f => f.name === options.startField)
-    : frame.fields.find(f => f.type === FieldType.time);
+  const startField = ensureTimeField(
+    options.startField
+      ? frame.fields.find(f => f.name === options.startField)
+      : frame.fields.find(f => f.type === FieldType.time),
+    timeZone
+  );
 
-  const endField = options.endField
-    ? frame.fields.find(f => f.name === options.endField)
-    : frame.fields.filter(f => f !== startField).find(f => f.type === FieldType.time);
+  const endField = ensureTimeField(
+    options.endField
+      ? frame.fields.find(f => f.name === options.endField)
+      : frame.fields.filter(f => f !== startField).find(f => f.type === FieldType.time)
+  );
 
   const groupByField = frame.fields.find(f => f.name === options.groupByField);
 
@@ -112,24 +117,7 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
 
   // Sort rows by start time.
   const sortedIndexes = indexes.sort((a, b) => {
-    if (startField.type === FieldType.time || startField.type === FieldType.number) {
-      return startField.values.get(a) - startField.values.get(b);
-    }
-
-    if (startField.type === FieldType.string) {
-      const startDateTime = dateTimeParse(startField.values.get(a));
-      const endDateTime = dateTimeParse(startField.values.get(b));
-
-      if (startDateTime.isBefore(endDateTime)) {
-        return -1;
-      } else if (endDateTime.isBefore(startDateTime)) {
-        return 1;
-      }
-      return 0;
-    }
-
-    // Should never get here, but if we do, leave order as is.
-    return a - b;
+    return startField.values.get(a) - startField.values.get(b);
   });
 
   // Find the time range based on the earliest start time and the latest end time.
