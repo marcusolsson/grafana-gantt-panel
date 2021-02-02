@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.3.0 (2020-01-28)
+## 0.3.1 (2021-02-02)
+
+### Bug fixes
+
+- Reduced precision when using strings as time ([#5](https://github.com/marcusolsson/grafana-gantt-panel/issues/5))
+
+## 0.3.0 (2021-01-28)
 
 ### Enhancements
 
