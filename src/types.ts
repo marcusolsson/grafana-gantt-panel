@@ -3,4 +3,5 @@ export interface GanttOptions {
   startField: string;
   endField: string;
   groupByField: string;
+  labelFields: string[];
 }

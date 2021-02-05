@@ -48,5 +48,16 @@ export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig()
       settings: {
         filterByType: [FieldType.string],
       },
+    })
+    .addCustomEditor({
+      id: 'labelFields',
+      path: 'labelFields',
+      name: 'Labels',
+      description: 'Fields to use as labels in the tooltip.',
+      category: ['Dimensions'],
+      editor: FieldSelectEditor,
+      settings: {
+        multi: true,
+      },
     });
 });

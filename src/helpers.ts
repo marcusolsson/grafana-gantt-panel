@@ -1,4 +1,12 @@
-import { ArrayVector, dateTimeParse, Field, FieldType, getDisplayProcessor, TimeZone } from '@grafana/data';
+import {
+  ArrayVector,
+  dateTimeParse,
+  DisplayValue,
+  Field,
+  FieldType,
+  getDisplayProcessor,
+  TimeZone,
+} from '@grafana/data';
 
 export const measureText = (text: string, size: string): number => {
   var canvas = document.createElement('canvas');
@@ -29,4 +37,8 @@ export const ensureTimeField = (field?: Field, timeZone?: TimeZone): Field | und
     return tmp;
   }
   return field;
+};
+
+export const getFormattedDisplayValue = (displayValue?: DisplayValue): string => {
+  return displayValue ? `${displayValue.prefix ?? ''}${displayValue.text}${displayValue.suffix ?? ''}` : '';
 };

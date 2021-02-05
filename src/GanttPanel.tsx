@@ -6,10 +6,10 @@ import Tippy from '@tippyjs/react';
 import humanizeDuration from 'humanize-duration';
 
 import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, SelectableValue } from '@grafana/data';
-import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select } from '@grafana/ui';
+import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select, Badge } from '@grafana/ui';
 
 import { GanttOptions } from './types';
-import { measureText, ensureTimeField } from './helpers';
+import { measureText, ensureTimeField, getFormattedDisplayValue } from './helpers';
 
 interface Props extends PanelProps<GanttOptions> {}
 
@@ -69,6 +69,8 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
   );
 
   const groupByField = frame.fields.find(f => f.name === options.groupByField);
+
+  const labelFields = options.labelFields?.map(_ => frame.fields.find(f => f.name === _)) ?? [];
 
   // Make sure that all fields have been configured before we continue.
   if (!textField || !startField || !endField) {
@@ -239,6 +241,24 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
                   )}
                   <div className={tooltipStyles.faint}>
                     {humanizeDuration((endTimeValue || Date.now()) - startTimeValue, { largest: 2 })}
+                  </div>
+                  <div>
+                    {labelFields
+                      .filter(_ => _?.values.get(i))
+                      .map(_ => _?.display!(_?.values.get(i)))
+                      .map(getFormattedDisplayValue)
+                      .map(_ => (
+                        <Badge
+                          className={css`
+                            margin-right: ${theme.spacing.xs};
+                            &:last-child {
+                              margin-right: 0;
+                            }
+                          `}
+                          text={_ ?? ''}
+                          color="blue"
+                        />
+                      ))}
                   </div>
                 </div>
               );
