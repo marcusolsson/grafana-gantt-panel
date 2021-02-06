@@ -1,12 +1,25 @@
 # Changelog
 
+## 0.4.0 (2021-02-06)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.3.1...v0.4.0)
+
+### Enhancements
+
+- Add labels to tooltip ([#9](https://github.com/marcusolsson/grafana-gantt-panel/issues/9))
+- Click-and-drag to change dashboard time interval  ([#10](https://github.com/marcusolsson/grafana-gantt-panel/issues/10))
+
 ## 0.3.1 (2021-02-02)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.3.0...v0.3.1)
 
 ### Bug fixes
 
 - Reduced precision when using strings as time ([#5](https://github.com/marcusolsson/grafana-gantt-panel/issues/5))
 
 ## 0.3.0 (2021-01-28)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.2.0...v0.3.0)
 
 ### Enhancements
 
@@ -15,6 +28,8 @@
 - Improved styles
 
 ## 0.2.0 (2020-01-27)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.1.0...v0.2.0)
 
 ### Enhancements
 
