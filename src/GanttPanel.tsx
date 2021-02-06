@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { css, cx } from 'emotion';
 import * as d3 from 'd3';
 import Tippy from '@tippyjs/react';
@@ -11,16 +11,54 @@ import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select, Badge } from
 import { GanttOptions } from './types';
 import { measureText, ensureTimeField, getFormattedDisplayValue } from './helpers';
 
+type Point = {
+  x: number;
+  y: number;
+};
+
 interface Props extends PanelProps<GanttOptions> {}
 
-export const GanttPanel: React.FC<Props> = ({ options, data, width, height, timeRange, timeZone }) => {
+export const GanttPanel: React.FC<Props> = ({
+  options,
+  data,
+  width,
+  height,
+  timeRange,
+  onChangeTimeRange,
+  timeZone,
+}) => {
+  const [group, setGroup] = useState<string>();
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  // Zoom state
+  const [dragging, setDragging] = useState(false);
+  const [coordinates, setCoordinates] = useState<Point>({ x: 0, y: 0 });
+  const [origin, setOrigin] = useState<Point>({ x: 0, y: 0 });
+
   const theme = useTheme();
   const styles = getStyles();
 
-  const [group, setGroup] = useState<string>();
-
   const onGroupChange = (selectableValue: SelectableValue<string>) => {
     setGroup(selectableValue.value);
+  };
+
+  // coordClientToViewbox converts a client coordinate to a coordinate inside
+  // the SVG's viewbox. We need this to translate the mouse cursor position into
+  // corresponding timestamp.
+  const coordClientToViewbox = (pt: Point): Point | undefined => {
+    if (svgRef.current) {
+      const matrix = svgRef.current.getScreenCTM();
+
+      if (matrix) {
+        const clientPoint = svgRef.current.createSVGPoint();
+
+        clientPoint.x = pt.x;
+        clientPoint.y = pt.x;
+
+        return clientPoint.matrixTransform(matrix.inverse());
+      }
+    }
+    return undefined;
   };
 
   // TODO: Support multiple data frames.
@@ -112,6 +150,8 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
 
   const currentGroup = group ?? (selectableGroups.length > 0 ? selectableGroups[0].value : undefined);
 
+  const absoluteMode = currentGroup === undefined;
+
   const indexes =
     selectableGroups.length > 0 && currentGroup
       ? groups[currentGroup]
@@ -151,6 +191,7 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
+  // Scale for converting from time to pixel.
   const absoluteScaleX = d3
     .scaleTime()
     .domain([
@@ -158,6 +199,12 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
       groupByField ? timeExtents[1] : timeRange.to.toDate(),
     ])
     .range([0, chartWidth]);
+
+  // Scale for converting from pixel to time. Used for the zoom window.
+  const invertedScaleX = d3
+    .scaleLinear()
+    .domain([0, chartWidth])
+    .range([timeRange.from.toDate().valueOf(), timeRange.to.toDate().valueOf()]);
 
   const scaleY = d3
     .scaleBand()
@@ -170,21 +217,72 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
   const axisX = d3.axisBottom(absoluteScaleX).tickFormat(d => dateTimeFormat(d as number, { format, timeZone }));
   const axisY = d3.axisLeft(scaleY);
 
+  const zoomWindow = {
+    x: origin.x + (coordinates.x < 0 ? coordinates.x : 0),
+    y: 0,
+    width: Math.abs(coordinates.x),
+    height: height - padding.bottom,
+  };
+
   return (
     <div
       className={cx(css`
         width: ${width}px;
         height: ${height}px;
+        user-select: none;
       `)}
     >
       <div>
         <svg
+          ref={svgRef}
           className={styles.svg}
           width={width}
           height={height - (selectableGroups.length > 0 ? 40 : 0)}
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
+          onMouseDown={e => {
+            if (!absoluteMode) {
+              return;
+            }
+
+            const pt = coordClientToViewbox({ x: e.clientX, y: e.clientY });
+
+            if (pt) {
+              setOrigin(pt);
+            }
+
+            setDragging(true);
+          }}
+          onMouseMove={e => {
+            if (!absoluteMode) {
+              return;
+            }
+
+            if (dragging) {
+              const pt = coordClientToViewbox({ x: e.clientX - origin.x, y: e.clientY - origin.y });
+
+              if (pt) {
+                setCoordinates(pt);
+              }
+            }
+          }}
+          onMouseUp={() => {
+            if (!absoluteMode) {
+              return;
+            }
+
+            setCoordinates({ x: 0, y: 0 });
+            setDragging(false);
+
+            // We use onChangeTimeRange updates the time interval for the
+            // dashboard.
+            onChangeTimeRange({
+              from: invertedScaleX(zoomWindow.x - padding.left),
+              to: invertedScaleX(zoomWindow.x + zoomWindow.width - padding.left),
+            });
+          }}
         >
+          {/* Activity bars */}
           <g>
             {sortedIndexes.map(i => {
               const label = textField.values.get(i);
@@ -284,6 +382,11 @@ export const GanttPanel: React.FC<Props> = ({ options, data, width, height, time
               );
             })}
           </g>
+
+          {/* Zoom window */}
+          {absoluteMode && <rect fill={'#ffffff'} opacity={0.1} {...zoomWindow} />}
+
+          {/* Axes */}
           <g
             transform={`translate(${padding.left}, ${height - (padding.top + padding.bottom)})`}
             ref={node => {
