@@ -3,7 +3,7 @@ import { GanttOptions } from './types';
 import { GanttPanel } from './GanttPanel';
 import { FieldSelectEditor } from './FieldSelectEditor';
 
-export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig().setPanelOptions(builder => {
+export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig().setPanelOptions((builder) => {
   return builder
     .addCustomEditor({
       id: 'textField',

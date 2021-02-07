@@ -90,25 +90,25 @@ export const GanttPanel: React.FC<Props> = ({
   // has set the field explicitly we use that one, otherwise we guess based on
   // the expected field type.
   const textField = options.textField
-    ? frame.fields.find(f => f.name === options.textField)
-    : frame.fields.find(f => f.type === FieldType.string);
+    ? frame.fields.find((f) => f.name === options.textField)
+    : frame.fields.find((f) => f.type === FieldType.string);
 
   const startField = ensureTimeField(
     options.startField
-      ? frame.fields.find(f => f.name === options.startField)
-      : frame.fields.find(f => f.type === FieldType.time),
+      ? frame.fields.find((f) => f.name === options.startField)
+      : frame.fields.find((f) => f.type === FieldType.time),
     timeZone
   );
 
   const endField = ensureTimeField(
     options.endField
-      ? frame.fields.find(f => f.name === options.endField)
-      : frame.fields.filter(f => f !== startField).find(f => f.type === FieldType.time)
+      ? frame.fields.find((f) => f.name === options.endField)
+      : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time)
   );
 
-  const groupByField = frame.fields.find(f => f.name === options.groupByField);
+  const groupByField = frame.fields.find((f) => f.name === options.groupByField);
 
-  const labelFields = options.labelFields?.map(_ => frame.fields.find(f => f.name === _)) ?? [];
+  const labelFields = options.labelFields?.map((_) => frame.fields.find((f) => f.name === _)) ?? [];
 
   // Make sure that all fields have been configured before we continue.
   if (!textField || !startField || !endField) {
@@ -143,7 +143,7 @@ export const GanttPanel: React.FC<Props> = ({
       }, {})
     : {};
 
-  const selectableGroups = Object.keys(groups).map(group => ({
+  const selectableGroups = Object.keys(groups).map((group) => ({
     label: group,
     value: group,
   }));
@@ -165,21 +165,21 @@ export const GanttPanel: React.FC<Props> = ({
   // Find the time range based on the earliest start time and the latest end time.
   const timeExtents: [DateTime, DateTime] = [
     sortedIndexes
-      .map(_ => startField.values.get(_))
+      .map((_) => startField.values.get(_))
       .reduce((acc: DateTime, curr: number) => {
         const currDateTime = dateTimeParse(curr, { timeZone });
         return currDateTime.isBefore(acc) ? currDateTime : acc;
       }, dateTimeParse(Date.now())),
     sortedIndexes
-      .map(_ => endField.values.get(_))
+      .map((_) => endField.values.get(_))
       .reduce((acc: DateTime, curr: number) => {
         const currDateTime = dateTimeParse(curr, { timeZone });
         return acc.isBefore(currDateTime) ? currDateTime : acc;
       }, dateTimeParse(0)),
   ];
 
-  const activityLabels = [...new Set(sortedIndexes.map(_ => textField.values.get(_)))];
-  const widestLabel = d3.max(activityLabels.map(_ => measureText(_, theme.typography.size.sm))) ?? 0;
+  const activityLabels = [...new Set(sortedIndexes.map((_) => textField.values.get(_)))];
+  const widestLabel = d3.max(activityLabels.map((_) => measureText(_, theme.typography.size.sm))) ?? 0;
 
   const padding = {
     left: 10 + widestLabel,
@@ -206,15 +206,12 @@ export const GanttPanel: React.FC<Props> = ({
     .domain([0, chartWidth])
     .range([timeRange.from.toDate().valueOf(), timeRange.to.toDate().valueOf()]);
 
-  const scaleY = d3
-    .scaleBand()
-    .domain(activityLabels)
-    .range([0, chartHeight]);
+  const scaleY = d3.scaleBand().domain(activityLabels).range([0, chartHeight]);
 
   const range = absoluteScaleX.domain();
   const format = graphTimeFormat(absoluteScaleX.ticks().length, range[0].valueOf(), range[1].valueOf());
 
-  const axisX = d3.axisBottom(absoluteScaleX).tickFormat(d => dateTimeFormat(d as number, { format, timeZone }));
+  const axisX = d3.axisBottom(absoluteScaleX).tickFormat((d) => dateTimeFormat(d as number, { format, timeZone }));
   const axisY = d3.axisLeft(scaleY);
 
   const zoomWindow = {
@@ -240,7 +237,7 @@ export const GanttPanel: React.FC<Props> = ({
           height={height - (selectableGroups.length > 0 ? 40 : 0)}
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
-          onMouseDown={e => {
+          onMouseDown={(e) => {
             if (!absoluteMode) {
               return;
             }
@@ -253,7 +250,7 @@ export const GanttPanel: React.FC<Props> = ({
 
             setDragging(true);
           }}
-          onMouseMove={e => {
+          onMouseMove={(e) => {
             if (!absoluteMode) {
               return;
             }
@@ -284,7 +281,7 @@ export const GanttPanel: React.FC<Props> = ({
         >
           {/* Activity bars */}
           <g>
-            {sortedIndexes.map(i => {
+            {sortedIndexes.map((i) => {
               const label = textField.values.get(i);
               const startTimeValue = startField.values.get(i);
               const endTimeValue = endField.values.get(i);
@@ -342,11 +339,12 @@ export const GanttPanel: React.FC<Props> = ({
                   </div>
                   <div>
                     {labelFields
-                      .filter(_ => _?.values.get(i))
-                      .map(_ => _?.display!(_?.values.get(i)))
+                      .filter((_) => _?.values.get(i))
+                      .map((_) => _?.display!(_?.values.get(i)))
                       .map(getFormattedDisplayValue)
-                      .map(_ => (
+                      .map((_, key) => (
                         <Badge
+                          key={key}
                           className={css`
                             margin-right: ${theme.spacing.xs};
                             &:last-child {
@@ -389,7 +387,7 @@ export const GanttPanel: React.FC<Props> = ({
           {/* Axes */}
           <g
             transform={`translate(${padding.left}, ${height - (padding.top + padding.bottom)})`}
-            ref={node => {
+            ref={(node) => {
               d3.select(node).call(axisX as any);
             }}
             className={css`
@@ -399,7 +397,7 @@ export const GanttPanel: React.FC<Props> = ({
           />
           <g
             transform={`translate(${padding.left}, 0)`}
-            ref={node => {
+            ref={(node) => {
               d3.select(node).call(axisY as any);
             }}
             className={css`
