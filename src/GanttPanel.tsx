@@ -350,6 +350,8 @@ export const GanttPanel: React.FC<Props> = ({
                             &:last-child {
                               margin-right: 0;
                             }
+                            overflow: hidden;
+                            max-width: 100%;
                           `}
                           text={_ ?? ''}
                           color="blue"
@@ -361,6 +363,7 @@ export const GanttPanel: React.FC<Props> = ({
 
               return (
                 <Tippy
+                  maxWidth={500}
                   content={tooltipContent}
                   key={i}
                   placement="bottom"
