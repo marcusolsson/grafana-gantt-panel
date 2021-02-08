@@ -1,7 +1,7 @@
 export interface GanttOptions {
-  textField: string;
-  startField: string;
-  endField: string;
-  groupByField: string;
+  textField?: string;
+  startField?: string;
+  endField?: string;
+  groupByField?: string;
   labelFields: string[];
 }

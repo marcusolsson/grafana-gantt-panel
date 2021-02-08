@@ -7,7 +7,7 @@ interface Settings {
   multi: boolean;
 }
 
-interface Props extends StandardEditorProps<string | string[], Settings> {}
+interface Props extends StandardEditorProps<string | string[] | null, Settings> {}
 
 export const FieldSelectEditor: React.FC<Props> = ({ item, value, onChange, context }) => {
   if (context.data && context.data.length > 0) {
@@ -23,7 +23,8 @@ export const FieldSelectEditor: React.FC<Props> = ({ item, value, onChange, cont
 
     if (item.settings?.multi) {
       return (
-        <MultiSelect<string>
+        <MultiSelect
+          isClearable
           isLoading={false}
           value={value as string[]}
           onChange={(e) => onChange(e.map((_) => _.value!))}
@@ -31,7 +32,17 @@ export const FieldSelectEditor: React.FC<Props> = ({ item, value, onChange, cont
         />
       );
     } else {
-      return <Select<string> isLoading={false} value={value} onChange={(e) => onChange(e.value)} options={options} />;
+      return (
+        <Select
+          isClearable
+          isLoading={false}
+          value={value as string | null}
+          onChange={(e) => {
+            onChange(e?.value);
+          }}
+          options={options}
+        />
+      );
     }
   }
 
