@@ -9,7 +9,7 @@ import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, Selecta
 import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select, Badge } from '@grafana/ui';
 
 import { GanttOptions } from './types';
-import { measureText, ensureTimeField, getFormattedDisplayValue } from './helpers';
+import { measureText, toTimeField, getFormattedDisplayValue } from 'grafana-plugin-support';
 
 type Point = {
   x: number;
@@ -93,14 +93,14 @@ export const GanttPanel: React.FC<Props> = ({
     ? frame.fields.find((f) => f.name === options.textField)
     : frame.fields.find((f) => f.type === FieldType.string);
 
-  const startField = ensureTimeField(
+  const startField = toTimeField(
     options.startField
       ? frame.fields.find((f) => f.name === options.startField)
       : frame.fields.find((f) => f.type === FieldType.time),
     timeZone
   );
 
-  const endField = ensureTimeField(
+  const endField = toTimeField(
     options.endField
       ? frame.fields.find((f) => f.name === options.endField)
       : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time)
@@ -179,7 +179,7 @@ export const GanttPanel: React.FC<Props> = ({
   ];
 
   const activityLabels = [...new Set(sortedIndexes.map((_) => textField.values.get(_)))];
-  const widestLabel = d3.max(activityLabels.map((_) => measureText(_, theme.typography.size.sm))) ?? 0;
+  const widestLabel = d3.max(activityLabels.map((_) => measureText(_, theme.typography.size.sm)?.width ?? 0)) ?? 0;
 
   const padding = {
     left: 10 + widestLabel,

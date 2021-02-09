@@ -1,7 +1,7 @@
 import { FieldType, PanelPlugin } from '@grafana/data';
 import { GanttOptions } from './types';
 import { GanttPanel } from './GanttPanel';
-import { FieldSelectEditor } from './FieldSelectEditor';
+import { FieldSelectEditor } from 'grafana-plugin-support';
 
 export const plugin = new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig().setPanelOptions((builder) => {
   return builder
