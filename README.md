@@ -9,6 +9,14 @@
 
 A panel plugin for [Grafana](https://grafana.com) to visualize Gantt charts.
 
+Gantt charts display a list of _tasks over time_, where each task is visualized using a bar with a start and an end time.
+
+## Features
+
+- Identify bottlenecks where one or more tasks are running significantly longer than others
+- Compare recurring sets of tasks by grouping them, such as data pipelines that run in regular intervals.
+- Display additional metadata from your data source as labels
+
 ![Screenshot](https://github.com/marcusolsson/grafana-gantt-panel/raw/main/src/img/screenshot.png)
 
 ## Configuration
