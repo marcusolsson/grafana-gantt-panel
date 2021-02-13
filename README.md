@@ -9,8 +9,6 @@
 
 A panel plugin for [Grafana](https://grafana.com) to visualize Gantt charts.
 
-**Important:** This plugin is still under development and is **not fit for production use**. Please use it and [submit issues](https://github.com/marcusolsson/grafana-gantt-panel/issues/new) to improve it.
-
 ![Screenshot](https://github.com/marcusolsson/grafana-gantt-panel/raw/main/src/img/screenshot.png)
 
 ## Configuration
