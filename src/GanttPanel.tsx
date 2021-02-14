@@ -6,14 +6,23 @@ import Tippy from '@tippyjs/react';
 import humanizeDuration from 'humanize-duration';
 
 import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, SelectableValue } from '@grafana/data';
-import { graphTimeFormat, stylesFactory, useTheme, InfoBox, Select, Badge } from '@grafana/ui';
+import { graphTimeFormat, stylesFactory, useTheme, Select, Badge } from '@grafana/ui';
 
 import { GanttOptions } from './types';
-import { measureText, toTimeField, getFormattedDisplayValue } from 'grafana-plugin-support';
+import { measureText, toTimeField, getFormattedDisplayValue, PanelWizard } from 'grafana-plugin-support';
 
 type Point = {
   x: number;
   y: number;
+};
+
+const usage = {
+  schema: [
+    { type: FieldType.string, description: 'Task name' },
+    { type: FieldType.time, description: 'Task start time' },
+    { type: FieldType.time, description: 'Task end time' },
+  ],
+  url: 'https://github.com/marcusolsson/grafana-gantt-panel',
 };
 
 interface Props extends PanelProps<GanttOptions> {}
@@ -67,21 +76,8 @@ export const GanttPanel: React.FC<Props> = ({
   // Display help text if no data was found.
   if (!frame) {
     return (
-      <div style={{ width, height, overflow: 'hidden' }}>
-        <InfoBox
-          title="Configure your panel"
-          url="https://github.com/marcusolsson/grafana-gantt-panel"
-          severity="info"
-          style={{ width: '100%', height: '100%' }}
-        >
-          <p>
-            Update your query to return at least:
-            <ul style={{ marginLeft: 20, marginTop: 10 }}>
-              <li>A text field</li>
-              <li>Two time fields</li>
-            </ul>
-          </p>
-        </InfoBox>
+      <div style={{ width, height }}>
+        <PanelWizard {...usage} />
       </div>
     );
   }
@@ -113,21 +109,8 @@ export const GanttPanel: React.FC<Props> = ({
   // Make sure that all fields have been configured before we continue.
   if (!textField || !startField || !endField) {
     return (
-      <div style={{ width, height, overflow: 'hidden' }}>
-        <InfoBox
-          title="Configure your panel"
-          url="https://github.com/marcusolsson/grafana-gantt-panel"
-          severity="info"
-          style={{ width: '100%', height: '100%' }}
-        >
-          <p>
-            Update your query to return at least:
-            <ul style={{ marginLeft: 20, marginTop: 10 }}>
-              <li>A text field</li>
-              <li>Two time fields</li>
-            </ul>
-          </p>
-        </InfoBox>
+      <div style={{ width, height }}>
+        <PanelWizard {...usage} fields={frame.fields} />
       </div>
     );
   }
