@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.0 (2021-02-16)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.4.0...v0.5.0)
+
+### Enhancements
+
+- Add option to sort tasks by text or by start time ([#15](https://github.com/marcusolsson/grafana-gantt-panel/issues/15))
+- Make dimensions clearable ([#12](https://github.com/marcusolsson/grafana-gantt-panel/issues/12))
+- Add fallback panel for unsupported Grafana versions
+- Add wizard for configuring the query
+
 ## 0.4.0 (2021-02-06)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.3.1...v0.4.0)
