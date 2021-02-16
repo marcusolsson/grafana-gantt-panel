@@ -140,9 +140,19 @@ export const GanttPanel: React.FC<Props> = ({
       ? groups[currentGroup]
       : textField.values.toArray().map((_, idx) => idx);
 
-  // Sort rows by start time.
+  const { sortBy, sortOrder } = options;
+
   const sortedIndexes = indexes.sort((a, b) => {
-    return startField.values.get(a) - startField.values.get(b);
+    const [i, j] = sortOrder === 'asc' ? [a, b] : [b, a];
+
+    switch (sortBy) {
+      case 'text':
+        return textField.values.get(i).localeCompare(textField.values.get(j));
+      case 'startTime':
+        return startField.values.get(i) - startField.values.get(j);
+      default:
+        return i - j;
+    }
   });
 
   // Find the time range based on the earliest start time and the latest end time.

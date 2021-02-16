@@ -39,3 +39,10 @@ As some data sources don't yet support time fields, the plugin supports selectin
 
 - If you select a string field, values need to be ISO 8601 strings
 - If you select a number field, values need to be Unix timestamps in milliseconds
+
+#### Display
+
+| Option | Description |
+|--------|-------------|
+| _Sort by_ | Dimension to sort tasks by. |
+| _Sort order_ | Order in which to sort the tasks. |

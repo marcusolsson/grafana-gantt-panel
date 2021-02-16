@@ -61,6 +61,44 @@ export const plugin = getPanelPluginOrFallback(
         settings: {
           multi: true,
         },
+      })
+      .addSelect({
+        path: 'sortBy',
+        name: 'Sort by',
+        defaultValue: 'startTime',
+        settings: {
+          options: [
+            {
+              label: 'Text',
+              value: 'text',
+              description: 'Sort tasks alphabetically by their text',
+            },
+            {
+              label: 'Start time',
+              value: 'startTime',
+              description: 'Sort tasks chronologically by their start time',
+            },
+          ],
+        },
+      })
+      .addSelect({
+        path: 'sortOrder',
+        name: 'Sort order',
+        defaultValue: 'asc',
+        settings: {
+          options: [
+            {
+              label: 'Ascending',
+              value: 'asc',
+              description: 'A-Z if sorting by text, or oldest to most recent if sorting by time',
+            },
+            {
+              label: 'Descending',
+              value: 'desc',
+              description: 'Z-A if sorting by text, or most recent to oldest if sorting by time',
+            },
+          ],
+        },
       });
   })
 );
