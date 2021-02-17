@@ -2,10 +2,11 @@ import React, { useState, useRef } from 'react';
 import { css, cx } from 'emotion';
 import * as d3 from 'd3';
 import Tippy from '@tippyjs/react';
+import dayjs from 'dayjs';
 
 import humanizeDuration from 'humanize-duration';
 
-import { FieldType, PanelProps, dateTimeFormat, dateTimeParse, DateTime, SelectableValue } from '@grafana/data';
+import { FieldType, PanelProps, dateTimeFormat, SelectableValue } from '@grafana/data';
 import { graphTimeFormat, stylesFactory, useTheme, Select, Badge } from '@grafana/ui';
 
 import { GanttOptions } from './types';
@@ -156,19 +157,19 @@ export const GanttPanel: React.FC<Props> = ({
   });
 
   // Find the time range based on the earliest start time and the latest end time.
-  const timeExtents: [DateTime, DateTime] = [
+  const timeExtents: [dayjs.Dayjs, dayjs.Dayjs] = [
     sortedIndexes
       .map((_) => startField.values.get(_))
-      .reduce((acc: DateTime, curr: number) => {
-        const currDateTime = dateTimeParse(curr, { timeZone });
+      .reduce((acc: dayjs.Dayjs, curr: number) => {
+        const currDateTime = dayjs(curr);
         return currDateTime.isBefore(acc) ? currDateTime : acc;
-      }, dateTimeParse(Date.now())),
+      }, dayjs()),
     sortedIndexes
       .map((_) => endField.values.get(_))
-      .reduce((acc: DateTime, curr: number) => {
-        const currDateTime = dateTimeParse(curr, { timeZone });
+      .reduce((acc: dayjs.Dayjs, curr: number) => {
+        const currDateTime = dayjs(curr);
         return acc.isBefore(currDateTime) ? currDateTime : acc;
-      }, dateTimeParse(0)),
+      }, dayjs(0)),
   ];
 
   const activityLabels = [...new Set(sortedIndexes.map((_) => textField.values.get(_)))];
@@ -279,8 +280,8 @@ export const GanttPanel: React.FC<Props> = ({
               const startTimeValue = startField.values.get(i);
               const endTimeValue = endField.values.get(i);
 
-              const startTime = dateTimeParse(startTimeValue, { timeZone });
-              const endTime = dateTimeParse(endTimeValue, { timeZone });
+              const startTime = dayjs(startTimeValue);
+              const endTime = dayjs(endTimeValue);
 
               const pixelStartX = startTimeValue ? Math.max(absoluteScaleX(startTime.toDate()), 0) : 0;
               const pixelEndX = endTimeValue ? Math.min(absoluteScaleX(endTime.toDate()), chartWidth) : chartWidth;

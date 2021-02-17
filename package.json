@@ -27,7 +27,8 @@
     "@types/humanize-duration": "^3.18.1",
     "grafana-plugin-support": "0.3.0-alpha.1",
     "humanize-duration": "^3.25.1",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "dayjs": "^1.10.4"
   },
   "devDependencies": {
     "@grafana/data": "^7.3.0",
