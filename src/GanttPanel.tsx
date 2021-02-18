@@ -147,7 +147,11 @@ export const GanttPanel: React.FC<Props> = ({
 
   const currentGroup = group ?? (selectableGroups.length > 0 ? selectableGroups[0].value : undefined);
 
-  const absoluteMode = currentGroup === undefined;
+  let absoluteMode = currentGroup === undefined;
+
+  if (options.experiments.enabled) {
+    absoluteMode = !options.experiments.lockToExtents;
+  }
 
   const indexes =
     selectableGroups.length > 0 && currentGroup
@@ -199,13 +203,23 @@ export const GanttPanel: React.FC<Props> = ({
   const chartHeight = height - padding.top - padding.bottom;
 
   // Scale for converting from time to pixel.
-  const absoluteScaleX = d3
-    .scaleTime()
-    .domain([
-      groupByField ? timeExtents[0] : timeRange.from.toDate(),
-      groupByField ? timeExtents[1] : timeRange.to.toDate(),
-    ])
-    .range([0, chartWidth]);
+  const getXDomain = (): [Date, Date] => {
+    const { experiments } = options;
+
+    if (experiments.enabled) {
+      if (experiments.lockToExtents) {
+        return [timeExtents[0].toDate(), timeExtents[1].toDate()];
+      }
+      return [timeRange.from.toDate(), timeRange.to.toDate()];
+    }
+
+    return [
+      groupByField ? timeExtents[0].toDate() : timeRange.from.toDate(),
+      groupByField ? timeExtents[1].toDate() : timeRange.to.toDate(),
+    ];
+  };
+
+  const absoluteScaleX = d3.scaleTime().domain(getXDomain()).range([0, chartWidth]);
 
   // Scale for converting from pixel to time. Used for the zoom window.
   const invertedScaleX = d3

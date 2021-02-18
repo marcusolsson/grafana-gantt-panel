@@ -7,6 +7,19 @@ export const plugin = getPanelPluginOrFallback(
   'marcusolsson-gantt-panel',
   new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig().setPanelOptions((builder) => {
     return builder
+      .addBooleanSwitch({
+        path: 'experiments.enabled',
+        name: 'Enable experiments',
+        description: `Try out new features that we're working on. Be aware that experiments can be unstable and may break your panel. Use at your own risk.`,
+        category: ['Experiments'],
+      })
+      .addBooleanSwitch({
+        path: 'experiments.lockToExtents',
+        name: 'Lock to extents',
+        description: 'Locks the view to the oldest start time and the most recent end time. This disables zooming.',
+        category: ['Experiments'],
+        showIf: (options) => options.experiments.enabled,
+      })
       .addCustomEditor({
         id: 'textField',
         path: 'textField',

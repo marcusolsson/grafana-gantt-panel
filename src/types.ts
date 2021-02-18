@@ -9,4 +9,9 @@ export interface GanttOptions {
   labelFields: string[];
   sortBy: SortBy;
   sortOrder: SortOrder;
+
+  experiments: {
+    enabled: boolean;
+    lockToExtents: boolean;
+  };
 }
