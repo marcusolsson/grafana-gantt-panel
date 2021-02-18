@@ -111,7 +111,20 @@ export const GanttPanel: React.FC<Props> = ({
   if (!textField || !startField || !endField) {
     return (
       <div style={{ width, height }}>
-        <PanelWizard {...usage} fields={frame.fields} />
+        <PanelWizard
+          {...usage}
+          fields={frame.fields.map((field) => {
+            // If the user set a number or string field as time, use the
+            // converted fields instead.
+            if (startField && startField.name === field.name) {
+              return startField;
+            }
+            if (endField && endField.name === field.name) {
+              return endField;
+            }
+            return field;
+          })}
+        />
       </div>
     );
   }
