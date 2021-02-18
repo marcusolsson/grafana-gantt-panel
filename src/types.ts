@@ -13,5 +13,6 @@ export interface GanttOptions {
   experiments: {
     enabled: boolean;
     lockToExtents: boolean;
+    relativeXAxis: boolean;
   };
 }

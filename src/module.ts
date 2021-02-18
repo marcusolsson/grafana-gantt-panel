@@ -20,6 +20,13 @@ export const plugin = getPanelPluginOrFallback(
         category: ['Experiments'],
         showIf: (options) => options.experiments.enabled,
       })
+      .addBooleanSwitch({
+        path: 'experiments.relativeXAxis',
+        name: 'Relative time',
+        description: 'Displays the duration since the start of the first task.',
+        category: ['Experiments'],
+        showIf: (options) => options.experiments.enabled,
+      })
       .addCustomEditor({
         id: 'textField',
         path: 'textField',

@@ -2,12 +2,13 @@ import React, { useState, useRef } from 'react';
 import { css, cx } from 'emotion';
 import * as d3 from 'd3';
 import Tippy from '@tippyjs/react';
+
 import dayjs from 'dayjs';
 
 import humanizeDuration from 'humanize-duration';
 
-import { FieldType, PanelProps, dateTimeFormat, SelectableValue } from '@grafana/data';
-import { graphTimeFormat, stylesFactory, useTheme, Select, Badge } from '@grafana/ui';
+import { dateTimeFormat, FieldType, PanelProps, SelectableValue } from '@grafana/data';
+import { stylesFactory, useTheme, Select, Badge, graphTimeFormat } from '@grafana/ui';
 
 import { GanttOptions } from './types';
 import { measureText, toTimeField, getFormattedDisplayValue, PanelWizard } from 'grafana-plugin-support';
@@ -147,11 +148,7 @@ export const GanttPanel: React.FC<Props> = ({
 
   const currentGroup = group ?? (selectableGroups.length > 0 ? selectableGroups[0].value : undefined);
 
-  let absoluteMode = currentGroup === undefined;
-
-  if (options.experiments.enabled) {
-    absoluteMode = !options.experiments.lockToExtents;
-  }
+  const absoluteMode = options.experiments.enabled ? !options.experiments.lockToExtents : currentGroup === undefined;
 
   const indexes =
     selectableGroups.length > 0 && currentGroup
@@ -203,7 +200,7 @@ export const GanttPanel: React.FC<Props> = ({
   const chartHeight = height - padding.top - padding.bottom;
 
   // Scale for converting from time to pixel.
-  const getXDomain = (): [Date, Date] => {
+  const getDomainX = (): [Date, Date] => {
     const { experiments } = options;
 
     if (experiments.enabled) {
@@ -219,7 +216,7 @@ export const GanttPanel: React.FC<Props> = ({
     ];
   };
 
-  const absoluteScaleX = d3.scaleTime().domain(getXDomain()).range([0, chartWidth]);
+  let scaleX: any = d3.scaleTime().domain(getDomainX()).range([0, chartWidth]);
 
   // Scale for converting from pixel to time. Used for the zoom window.
   const invertedScaleX = d3
@@ -229,10 +226,20 @@ export const GanttPanel: React.FC<Props> = ({
 
   const scaleY = d3.scaleBand().domain(activityLabels).range([0, chartHeight]);
 
-  const range = absoluteScaleX.domain();
-  const format = graphTimeFormat(absoluteScaleX.ticks().length, range[0].valueOf(), range[1].valueOf());
+  const axisX = d3.axisBottom(scaleX).tickFormat((d) => {
+    if (options.experiments.enabled && options.experiments.relativeXAxis) {
+      const duration = (d as number) - timeExtents[0].valueOf();
+      if (duration < 0) {
+        return '';
+      }
+      return humanizeDuration(duration, { largest: 1 });
+    }
 
-  const axisX = d3.axisBottom(absoluteScaleX).tickFormat((d) => dateTimeFormat(d as number, { format, timeZone }));
+    const range = scaleX.domain();
+    const format = graphTimeFormat(scaleX.ticks().length, range[0].valueOf(), range[1].valueOf());
+    return dateTimeFormat(d as number, { format, timeZone });
+  });
+
   const axisY = d3.axisLeft(scaleY);
 
   const zoomWindow = {
@@ -310,8 +317,8 @@ export const GanttPanel: React.FC<Props> = ({
               const startTime = dayjs(startTimeValue);
               const endTime = dayjs(endTimeValue);
 
-              const pixelStartX = startTimeValue ? Math.max(absoluteScaleX(startTime.toDate()), 0) : 0;
-              const pixelEndX = endTimeValue ? Math.min(absoluteScaleX(endTime.toDate()), chartWidth) : chartWidth;
+              const pixelStartX = startTimeValue ? Math.max(scaleX(startTime.toDate()), 0) : 0;
+              const pixelEndX = endTimeValue ? Math.min(scaleX(endTime.toDate()), chartWidth) : chartWidth;
 
               const barPadding = 2;
               const activityBarWidth = Math.max(pixelEndX - pixelStartX - 2, 1);
