@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0 (2021-02-18)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.5.0...v0.6.0)
+
+### Enhancements
+
+Adds a new Experiments category with two new features: _Lock to extents_ and _Relative time_:
+
+- **Lock to extents** locks the zoom to fit all tasks from start to finish
+- **Relative time** changes the X axis to display the duration from when the first task started
+
 ## 0.5.0 (2021-02-16)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.4.0...v0.5.0)

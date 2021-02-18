@@ -25,6 +25,10 @@ This section lists the available configuration options for the Gantt panel.
 
 ### Panel options
 
+#### Experiments
+
+By enabling experiments, you can try out new features that we're working on. **Experiments can be unstable and may break your panel**. Use at your own risk.
+
 #### Dimensions
 
 | Option | Description |
