@@ -155,9 +155,27 @@ export const GanttPanel: React.FC<Props> = ({
       ? groups[currentGroup]
       : textField.values.toArray().map((_, idx) => idx);
 
+  const from = dayjs(timeRange.from.valueOf());
+  const to = dayjs(timeRange.to.valueOf());
+
+  const isWithinTimeRange = isBetween(from, to);
+
+  // Filter out any tasks that aren't visible in the selected time interval.
+  const visibleIndexes = indexes.filter((idx) => {
+    const start = dayjs(startField.values.get(idx));
+    const end = dayjs(endField.values.get(idx));
+
+    return (
+      isWithinTimeRange(start) ||
+      isWithinTimeRange(end) ||
+      // If Lock to extents is enabled, all tasks should be visible.
+      (options.experiments.enabled && options.experiments.lockToExtents)
+    );
+  });
+
   const { sortBy, sortOrder } = options;
 
-  const sortedIndexes = indexes.sort((a, b) => {
+  const sortedIndexes = visibleIndexes.sort((a, b) => {
     const [i, j] = sortOrder === 'asc' ? [a, b] : [b, a];
 
     switch (sortBy) {
@@ -169,6 +187,19 @@ export const GanttPanel: React.FC<Props> = ({
         return i - j;
     }
   });
+
+  const taskLabels = [...new Set(sortedIndexes.map((_) => textField.values.get(_)))];
+  const widestLabel = d3.max(taskLabels.map((_) => measureText(_, theme.typography.size.sm)?.width ?? 0)) ?? 0;
+
+  const padding = {
+    left: 10 + widestLabel,
+    top: 0,
+    bottom: 30 + (selectableGroups.length > 0 ? 40 : 0),
+    right: 10,
+  };
+
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
 
   // Find the time range based on the earliest start time and the latest end time.
   const timeExtents: [dayjs.Dayjs, dayjs.Dayjs] = [
@@ -186,45 +217,29 @@ export const GanttPanel: React.FC<Props> = ({
       }, dayjs(0)),
   ];
 
-  const activityLabels = [...new Set(sortedIndexes.map((_) => textField.values.get(_)))];
-  const widestLabel = d3.max(activityLabels.map((_) => measureText(_, theme.typography.size.sm)?.width ?? 0)) ?? 0;
-
-  const padding = {
-    left: 10 + widestLabel,
-    top: 0,
-    bottom: 30 + (selectableGroups.length > 0 ? 40 : 0),
-    right: 10,
-  };
-
-  const chartWidth = width - padding.left - padding.right;
-  const chartHeight = height - padding.top - padding.bottom;
-
   // Scale for converting from time to pixel.
-  const getDomainX = (): [Date, Date] => {
+  const getExtents = (): [Date, Date] => {
     const { experiments } = options;
 
     if (experiments.enabled) {
       if (experiments.lockToExtents) {
         return [timeExtents[0].toDate(), timeExtents[1].toDate()];
       }
-      return [timeRange.from.toDate(), timeRange.to.toDate()];
+      return [from.toDate(), to.toDate()];
     }
 
     return [
-      groupByField ? timeExtents[0].toDate() : timeRange.from.toDate(),
-      groupByField ? timeExtents[1].toDate() : timeRange.to.toDate(),
+      groupByField ? timeExtents[0].toDate() : from.toDate(),
+      groupByField ? timeExtents[1].toDate() : to.toDate(),
     ];
   };
 
-  let scaleX: any = d3.scaleTime().domain(getDomainX()).range([0, chartWidth]);
+  let scaleX: any = d3.scaleTime().domain(getExtents()).range([0, chartWidth]);
 
   // Scale for converting from pixel to time. Used for the zoom window.
-  const invertedScaleX = d3
-    .scaleLinear()
-    .domain([0, chartWidth])
-    .range([timeRange.from.toDate().valueOf(), timeRange.to.toDate().valueOf()]);
+  const invertedScaleX = d3.scaleLinear().domain([0, chartWidth]).range([from.valueOf(), to.valueOf()]);
 
-  const scaleY = d3.scaleBand().domain(activityLabels).range([0, chartHeight]);
+  const scaleY = d3.scaleBand().domain(taskLabels).range([0, chartHeight]);
 
   const axisX = d3.axisBottom(scaleX).tickFormat((d) => {
     if (options.experiments.enabled && options.experiments.relativeXAxis) {
@@ -307,7 +322,7 @@ export const GanttPanel: React.FC<Props> = ({
             });
           }}
         >
-          {/* Activity bars */}
+          {/* Task bars */}
           <g>
             {sortedIndexes.map((i) => {
               const label = textField.values.get(i);
@@ -321,10 +336,10 @@ export const GanttPanel: React.FC<Props> = ({
               const pixelEndX = endTimeValue ? Math.min(scaleX(endTime.toDate()), chartWidth) : chartWidth;
 
               const barPadding = 2;
-              const activityBarWidth = Math.max(pixelEndX - pixelStartX - 2, 1);
-              const activityBarHeight = scaleY.bandwidth() - barPadding;
+              const taskBarWidth = Math.max(pixelEndX - pixelStartX - 2, 1);
+              const taskBarHeight = scaleY.bandwidth() - barPadding;
 
-              const activityBarPos = {
+              const taskBarPos = {
                 x: pixelStartX + padding.left,
                 y: scaleY(label),
               };
@@ -400,10 +415,10 @@ export const GanttPanel: React.FC<Props> = ({
                 >
                   <rect
                     fill={'rgb(115, 191, 105)'}
-                    x={activityBarPos.x}
-                    y={activityBarPos.y}
-                    width={activityBarWidth}
-                    height={activityBarHeight}
+                    x={taskBarPos.x}
+                    y={taskBarPos.y}
+                    width={taskBarWidth}
+                    height={taskBarHeight}
                     rx={theme.border.radius.sm}
                     ry={theme.border.radius.sm}
                   />
@@ -459,3 +474,7 @@ const getStyles = stylesFactory(() => {
     frameSelect: css``,
   };
 });
+
+const isBetween = (from: dayjs.Dayjs, to: dayjs.Dayjs) => (date: dayjs.Dayjs) => {
+  return !(date.isBefore(from) || date.isAfter(to));
+};
