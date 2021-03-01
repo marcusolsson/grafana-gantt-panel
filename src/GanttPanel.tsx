@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 
 import humanizeDuration from 'humanize-duration';
 
-import { dateTimeFormat, FieldType, PanelProps, SelectableValue } from '@grafana/data';
+import { dateTimeFormat, FieldType, GrafanaTheme, PanelProps, SelectableValue } from '@grafana/data';
 import { stylesFactory, useTheme, Select, Badge, graphTimeFormat } from '@grafana/ui';
 
 import { GanttOptions } from './types';
@@ -47,7 +47,7 @@ export const GanttPanel: React.FC<Props> = ({
   const [origin, setOrigin] = useState<Point>({ x: 0, y: 0 });
 
   const theme = useTheme();
-  const styles = getStyles();
+  const styles = getStyles(theme);
 
   const onGroupChange = (selectableValue: SelectableValue<string>) => {
     setGroup(selectableValue.value);
@@ -344,61 +344,25 @@ export const GanttPanel: React.FC<Props> = ({
                 y: scaleY(label),
               };
 
-              const tooltipStyles = {
-                root: css`
-                  border-radius: ${theme.border.radius.md};
-                  background-color: ${theme.colors.bg2};
-                  padding: ${theme.spacing.sm};
-                  box-shadow: 0px 0px 20px ${theme.colors.dropdownShadow};
-                `,
-                header: css`
-                  font-weight: ${theme.typography.weight.semibold};
-                  font-size: ${theme.typography.size.md};
-                  margin-bottom: ${theme.spacing.sm};
-                  color: ${theme.colors.text};
-                `,
-                value: css`
-                  font-size: ${theme.typography.size.md};
-                  margin-bottom: ${theme.spacing.xs};
-                `,
-                faint: css`
-                  font-size: ${theme.typography.size.md};
-                  margin-bottom: ${theme.spacing.xs};
-                  color: ${theme.colors.textSemiWeak};
-                `,
-              };
-
               const tooltipContent = (
                 <div>
-                  <div className={tooltipStyles.header}>{label}</div>
+                  <div className={styles.tooltip.header}>{label}</div>
                   {startTimeValue && (
-                    <div className={tooltipStyles.value}>Started at: {startField.display!(startTimeValue).text}</div>
+                    <div className={styles.tooltip.value}>Started at: {startField.display!(startTimeValue).text}</div>
                   )}
                   {endTimeValue && (
-                    <div className={tooltipStyles.value}>Ended at: {endField.display!(endTimeValue).text}</div>
+                    <div className={styles.tooltip.value}>Ended at: {endField.display!(endTimeValue).text}</div>
                   )}
-                  <div className={tooltipStyles.faint}>
+                  <div className={styles.tooltip.faint}>
                     {humanizeDuration((endTimeValue || Date.now()) - startTimeValue, { largest: 2 })}
                   </div>
                   <div>
                     {labelFields
-                      .filter((_) => _?.values.get(i))
-                      .map((_) => _?.display!(_?.values.get(i)))
+                      .filter((field) => field?.values.get(i))
+                      .map((field) => field?.display!(field?.values.get(i)))
                       .map(getFormattedDisplayValue)
-                      .map((_, key) => (
-                        <Badge
-                          key={key}
-                          className={css`
-                            margin-right: ${theme.spacing.xs};
-                            &:last-child {
-                              margin-right: 0;
-                            }
-                            overflow: hidden;
-                            max-width: 100%;
-                          `}
-                          text={_ ?? ''}
-                          color="blue"
-                        />
+                      .map((label, key) => (
+                        <Badge key={key} className={styles.tooltip.badge} text={label ?? ''} color="blue" />
                       ))}
                   </div>
                 </div>
@@ -411,7 +375,7 @@ export const GanttPanel: React.FC<Props> = ({
                   key={i}
                   placement="bottom"
                   animation={false}
-                  className={tooltipStyles.root}
+                  className={styles.tooltip.root}
                 >
                   <rect
                     fill={'rgb(115, 191, 105)'}
@@ -462,7 +426,7 @@ export const GanttPanel: React.FC<Props> = ({
   );
 };
 
-const getStyles = stylesFactory(() => {
+const getStyles = stylesFactory((theme: GrafanaTheme) => {
   return {
     svg: css`
       flex: 1;
@@ -472,6 +436,37 @@ const getStyles = stylesFactory(() => {
       flex-direction: column;
     `,
     frameSelect: css``,
+    tooltip: {
+      root: css`
+        border-radius: ${theme.border.radius.md};
+        background-color: ${theme.colors.bg2};
+        padding: ${theme.spacing.sm};
+        box-shadow: 0px 0px 20px ${theme.colors.dropdownShadow};
+      `,
+      header: css`
+        font-weight: ${theme.typography.weight.semibold};
+        font-size: ${theme.typography.size.md};
+        margin-bottom: ${theme.spacing.sm};
+        color: ${theme.colors.text};
+      `,
+      value: css`
+        font-size: ${theme.typography.size.md};
+        margin-bottom: ${theme.spacing.xs};
+      `,
+      faint: css`
+        font-size: ${theme.typography.size.md};
+        margin-bottom: ${theme.spacing.xs};
+        color: ${theme.colors.textSemiWeak};
+      `,
+      badge: css`
+        margin-right: ${theme.spacing.xs};
+        &:last-child {
+          margin-right: 0;
+        }
+        overflow: hidden;
+        max-width: 100%;
+      `,
+    },
   };
 });
 
