@@ -15,7 +15,7 @@
     },
     "links": [
       { "name": "Website", "url": "https://github.com/marcusolsson/grafana-gantt-panel" },
-      { "name": "License", "url": "https://github.com/marcusolsson/grafana-gantt-panel/blob/master/LICENSE" }
+      { "name": "License", "url": "https://github.com/marcusolsson/grafana-gantt-panel/blob/main/LICENSE" }
     ],
     "screenshots": [
       {

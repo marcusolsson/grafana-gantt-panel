@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.1 (2021-03-07)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.6.0...v0.6.1)
+
+### Enhancements
+
+- Limit Y-axis to relevant values only ([#19](https://github.com/marcusolsson/grafana-gantt-panel/issues/19))
+
 ## 0.6.0 (2021-02-18)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.5.0...v0.6.0)
