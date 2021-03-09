@@ -239,7 +239,11 @@ export const GanttPanel: React.FC<Props> = ({
   // Scale for converting from pixel to time. Used for the zoom window.
   const invertedScaleX = d3.scaleLinear().domain([0, chartWidth]).range([from.valueOf(), to.valueOf()]);
 
-  const scaleY = d3.scaleBand().domain(taskLabels).range([0, chartHeight]);
+  //Limit bar height to 25% of chartHeight.
+  const barHeightLimit = 0.25;
+  const scalePadding = Math.max((1 - barHeightLimit * taskLabels.length) / (1 + barHeightLimit), 0);
+
+  const scaleY = d3.scaleBand().domain(taskLabels).range([0, chartHeight]).padding(scalePadding);
 
   const axisX = d3.axisBottom(scaleX).tickFormat((d) => {
     if (options.experiments.enabled && options.experiments.relativeXAxis) {
