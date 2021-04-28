@@ -5,10 +5,13 @@ export interface GanttOptions {
   textField?: string;
   startField?: string;
   endField?: string;
+  colorByField?: string;
   groupByField?: string;
   labelFields: string[];
   sortBy: SortBy;
   sortOrder: SortOrder;
+
+  colors?: Array<{ text: string; color: string }>;
 
   experiments: {
     enabled: boolean;
