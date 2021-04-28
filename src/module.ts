@@ -2,11 +2,34 @@ import { FieldType, PanelPlugin } from '@grafana/data';
 import { GanttOptions } from './types';
 import { GanttPanel } from './GanttPanel';
 import { FieldSelectEditor, getPanelPluginOrFallback } from 'grafana-plugin-support';
+import { LegendDisplayMode } from '@grafana/ui';
 
 export const plugin = getPanelPluginOrFallback(
   'marcusolsson-gantt-panel',
   new PanelPlugin<GanttOptions>(GanttPanel).useFieldConfig().setPanelOptions((builder) => {
     return builder
+      .addRadio({
+        path: 'legendMode',
+        name: 'Legend mode',
+        defaultValue: LegendDisplayMode.List,
+        settings: {
+          options: [LegendDisplayMode.List, LegendDisplayMode.Table, LegendDisplayMode.Hidden].map((mode) => ({
+            label: mode[0].toUpperCase() + mode.slice(1),
+            value: mode,
+          })),
+        },
+      })
+      .addRadio({
+        path: 'legendPlacement',
+        name: 'Legend placement',
+        defaultValue: 'bottom',
+        settings: {
+          options: [
+            { label: 'Bottom', value: 'bottom' },
+            { label: 'Right', value: 'right' },
+          ],
+        },
+      })
       .addBooleanSwitch({
         path: 'experiments.enabled',
         name: 'Enable experiments',
