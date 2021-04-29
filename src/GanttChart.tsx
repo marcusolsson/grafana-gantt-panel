@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import * as d3 from 'd3';
-import Tippy from '@tippyjs/react';
 import humanizeDuration from 'humanize-duration';
 
 import { AbsoluteTimeRange, dateTimeFormat, Field, GrafanaTheme, SelectableValue, TimeRange } from '@grafana/data';
@@ -10,6 +9,7 @@ import { measureText, getFormattedDisplayValue } from 'grafana-plugin-support';
 import { css } from 'emotion';
 import dayjs from 'dayjs';
 import { labelColor } from './helpers';
+import { GanttTask } from './GanttTask';
 
 type Point = {
   x: number;
@@ -53,6 +53,11 @@ export const GanttChart = ({
   sortOrder,
   colors,
 }: Props) => {
+  // const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
+  // const [contextMenuLabel, setContextMenuLabel] = useState<React.ReactNode | string>('');
+  // const [contextMenuGroups, setContextMenuGroups] = useState<MenuItemsGroup[]>([]);
+  // const [showContextMenu, setShowContextMenu] = useState(false);
+
   const [group, setGroup] = useState<string>();
 
   const theme = useTheme();
@@ -66,6 +71,7 @@ export const GanttChart = ({
 
   // Zoom state
   const [dragging, setDragging] = useState(false);
+  const [isMouseDown, setMouseDown] = useState(false);
   const [coordinates, setCoordinates] = useState<Point>({ x: 0, y: 0 });
   const [origin, setOrigin] = useState<Point>({ x: 0, y: 0 });
 
@@ -215,10 +221,17 @@ export const GanttChart = ({
   const axisY = d3.axisLeft(scaleY);
 
   const zoomWindow = {
-    x: origin.x + (coordinates.x < 0 ? coordinates.x : 0),
+    x: origin.x + (coordinates.x - origin.x < 0 ? coordinates.x - origin.x : 0),
     y: 0,
-    width: Math.abs(coordinates.x),
+    width: Math.abs(coordinates.x - origin.x),
     height: height - padding.bottom,
+  };
+
+  const crosshair = {
+    x1: coordinates.x,
+    y1: 0,
+    x2: coordinates.x,
+    y2: height - padding.bottom,
   };
 
   return (
@@ -231,45 +244,41 @@ export const GanttChart = ({
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         onMouseDown={(e) => {
-          if (!absoluteMode) {
-            return;
+          setMouseDown(true);
+
+          const coord = coordClientToViewbox({ x: e.clientX, y: e.clientY });
+
+          if (coord) {
+            setOrigin(coord);
           }
-
-          const pt = coordClientToViewbox({ x: e.clientX, y: e.clientY });
-
-          if (pt) {
-            setOrigin(pt);
-          }
-
-          setDragging(true);
         }}
         onMouseMove={(e) => {
-          if (!absoluteMode) {
-            return;
-          }
+          const coord = coordClientToViewbox({ x: e.clientX, y: e.clientY });
 
-          if (dragging) {
-            const pt = coordClientToViewbox({ x: e.clientX - origin.x, y: e.clientY - origin.y });
+          if (coord) {
+            setCoordinates(coord);
 
-            if (pt) {
-              setCoordinates(pt);
+            if (isMouseDown && absoluteMode) {
+              const distance = Math.sqrt(Math.pow(origin.x - coord.x, 2) + Math.pow(origin.y - coord.y, 2));
+              if (distance > 5) {
+                setDragging(true);
+              }
             }
           }
         }}
         onMouseUp={() => {
-          if (!absoluteMode) {
-            return;
+          setMouseDown(false);
+
+          if (dragging && absoluteMode) {
+            // We use onChangeTimeRange updates the time interval for the
+            // dashboard.
+            onChangeTimeRange({
+              from: invertedScaleX(zoomWindow.x - padding.left),
+              to: invertedScaleX(zoomWindow.x + zoomWindow.width - padding.left),
+            });
+
+            setDragging(false);
           }
-
-          setCoordinates({ x: 0, y: 0 });
-          setDragging(false);
-
-          // We use onChangeTimeRange updates the time interval for the
-          // dashboard.
-          onChangeTimeRange({
-            from: invertedScaleX(zoomWindow.x - padding.left),
-            to: invertedScaleX(zoomWindow.x + zoomWindow.width - padding.left),
-          });
         }}
       >
         {/* Task bars */}
@@ -291,7 +300,7 @@ export const GanttChart = ({
 
             const taskBarPos = {
               x: pixelStartX + padding.left,
-              y: scaleY(label),
+              y: scaleY(label) ?? 0,
             };
 
             const tooltipContent = (
@@ -319,30 +328,28 @@ export const GanttChart = ({
             );
 
             return (
-              <Tippy
-                maxWidth={500}
-                content={tooltipContent}
-                key={i}
-                placement="bottom"
-                animation={false}
-                className={styles.tooltip.root}
-              >
-                <rect
-                  fill={labelColor(label, colors, theme)}
+              <>
+                <GanttTask
                   x={taskBarPos.x}
                   y={taskBarPos.y}
                   width={taskBarWidth}
                   height={taskBarHeight}
-                  rx={theme.border.radius.sm}
-                  ry={theme.border.radius.sm}
+                  color={labelColor(label, colors, theme)}
+                  tooltip={tooltipContent}
+                  links={textField.getLinks!({ valueRowIndex: i })}
                 />
-              </Tippy>
+              </>
             );
           })}
         </g>
 
         {/* Zoom window */}
-        {absoluteMode && <rect fill={'#ffffff'} opacity={0.1} {...zoomWindow} />}
+        {absoluteMode && dragging && (
+          <rect fill={theme.colors.text} opacity={0.1} pointerEvents="none" {...zoomWindow} />
+        )}
+        {coordinates.x > padding.left && coordinates.x < width - padding.right && (
+          <line {...crosshair} stroke={theme.colors.text} opacity={0.5} pointerEvents="none" />
+        )}
 
         {/* Axes */}
         <g
@@ -383,6 +390,7 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
   return {
     svg: css`
       flex: 1;
+      user-select: none;
     `,
     root: css`
       display: flex;
