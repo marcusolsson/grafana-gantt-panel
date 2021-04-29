@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldType, PanelProps } from '@grafana/data';
+import { ArrayVector, Field, FieldType, getDisplayProcessor, PanelProps } from '@grafana/data';
 import { VizLayout, VizLegend, LegendDisplayMode, useTheme } from '@grafana/ui';
 
 import { GanttOptions } from './types';
@@ -58,11 +58,18 @@ export const GanttPanel: React.FC<Props> = ({
     timeZone
   );
 
-  const endField = toTimeField(
-    options.endField
-      ? frame.fields.find((f) => f.name === options.endField)
-      : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time)
-  );
+  const durationField = options.startField
+    ? frame.fields.find((f) => f.name === options.durationField)
+    : frame.fields.find((f) => f.type === FieldType.number);
+
+  const endField =
+    options.endType === 'duration'
+      ? durationToTimeField(startField, durationField)
+      : toTimeField(
+          options.endField
+            ? frame.fields.find((f) => f.name === options.endField)
+            : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time)
+        );
 
   const groupByField = frame.fields.find((f) => f.name === options.groupByField);
 
@@ -135,4 +142,41 @@ export const GanttPanel: React.FC<Props> = ({
       )}
     </VizLayout>
   );
+};
+
+export const durationToTimeField = (startField?: Field, durationField?: Field): Field | undefined => {
+  if (!startField || !durationField) {
+    return startField;
+  }
+
+  let multiplier = 1;
+
+  switch (durationField.config.unit) {
+    case 's':
+      multiplier = 1000;
+      break;
+    case 'm':
+      multiplier = 60 * 1000;
+      break;
+    case 'h':
+      multiplier = 60 * 60 * 1000;
+      break;
+    case 'd':
+      multiplier = 24 * 60 * 60 * 1000;
+      break;
+  }
+
+  const tmp: Field = {
+    ...durationField,
+    type: FieldType.time,
+    values: new ArrayVector(
+      Array.from({ length: startField.values.length }).map(
+        (_, i) => startField.values.get(i) + durationField.values.get(i) * multiplier
+      )
+    ),
+  };
+
+  tmp.display = getDisplayProcessor({ field: tmp });
+
+  return tmp;
 };

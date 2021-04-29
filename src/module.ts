@@ -72,6 +72,19 @@ export const plugin = getPanelPluginOrFallback(
           filterByType: [FieldType.time, FieldType.string, FieldType.number],
         },
       })
+      .addRadio({
+        path: 'endType',
+        name: 'End type',
+        description: 'Type used to determine when the task ends.',
+        category: ['Dimensions'],
+        defaultValue: 'time',
+        settings: {
+          options: [
+            { label: 'Time', value: 'time' },
+            { label: 'Duration', value: 'duration' },
+          ],
+        },
+      })
       .addCustomEditor({
         id: 'endField',
         path: 'endField',
@@ -79,8 +92,22 @@ export const plugin = getPanelPluginOrFallback(
         description: 'Field to use for the end time. Defaults to the second time field.',
         editor: FieldSelectEditor,
         category: ['Dimensions'],
+        showIf: (options) => options.endType === 'time',
         settings: {
           filterByType: [FieldType.time, FieldType.string, FieldType.number],
+        },
+      })
+      .addCustomEditor({
+        id: 'duration',
+        path: 'duration',
+        name: 'Duration',
+        description:
+          'Field to use for the duration. Defaults to the first number field. The default unit is milliseconds. For other units, override the Unit for the field.',
+        editor: FieldSelectEditor,
+        category: ['Dimensions'],
+        showIf: (options) => options.endType === 'duration',
+        settings: {
+          filterByType: [FieldType.number],
         },
       })
       .addCustomEditor({

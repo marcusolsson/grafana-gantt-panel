@@ -7,6 +7,7 @@ export interface GanttOptions {
   textField?: string;
   startField?: string;
   endField?: string;
+  durationField?: string;
   groupByField?: string;
   labelFields: string[];
   sortBy: SortBy;
@@ -15,6 +16,8 @@ export interface GanttOptions {
   colors: Record<string, string>;
   legendMode: LegendDisplayMode;
   legendPlacement: LegendPlacement;
+
+  endType: string;
 
   experiments: {
     enabled: boolean;
