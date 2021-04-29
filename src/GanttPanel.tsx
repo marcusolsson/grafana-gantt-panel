@@ -7,7 +7,6 @@ import { GanttOptions } from './types';
 import { toTimeField, PanelWizard } from 'grafana-plugin-support';
 import { GanttChart } from 'GanttChart';
 import { labelColor } from 'helpers';
-import { css } from 'emotion';
 
 const usage = {
   schema: [
