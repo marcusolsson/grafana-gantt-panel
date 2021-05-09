@@ -94,35 +94,10 @@ export const plugin = getPanelPluginOrFallback(
           multi: true,
         },
       })
-      .addCustomEditor({
-        id: 'colors',
-        path: 'colors',
-        name: 'Color mappings',
-        editor: ColorEditor,
-        showIf: (options, data) => {
-          // This function duplicates the logic in GanttPanel to figure out
-          // whether the Color by dimension is a string.
-
-          if (!data || !data.length) {
-            return false;
-          }
-
-          const frame = data[0];
-
-          const textField = options.textField
-            ? frame.fields.find((f) => f.name === options.textField)
-            : frame.fields.find((f) => f.type === FieldType.string);
-
-          const colorByField = options.colorByField
-            ? frame.fields.find((f) => f.name === options.colorByField)
-            : textField;
-
-          if (!colorByField) {
-            return false;
-          }
-
-          return colorByField.type === FieldType.string;
-        },
+      .addBooleanSwitch({
+        path: 'showYAxis',
+        name: 'Show Y-axis',
+        defaultValue: true,
       })
       .addSelect({
         path: 'sortBy',
@@ -160,6 +135,36 @@ export const plugin = getPanelPluginOrFallback(
               description: 'Z-A if sorting by text, or most recent to oldest if sorting by time',
             },
           ],
+        },
+      })
+      .addCustomEditor({
+        id: 'colors',
+        path: 'colors',
+        name: 'Color mappings',
+        editor: ColorEditor,
+        showIf: (options, data) => {
+          // This function duplicates the logic in GanttPanel to figure out
+          // whether the Color by dimension is a string.
+
+          if (!data || !data.length) {
+            return false;
+          }
+
+          const frame = data[0];
+
+          const textField = options.textField
+            ? frame.fields.find((f) => f.name === options.textField)
+            : frame.fields.find((f) => f.type === FieldType.string);
+
+          const colorByField = options.colorByField
+            ? frame.fields.find((f) => f.name === options.colorByField)
+            : textField;
+
+          if (!colorByField) {
+            return false;
+          }
+
+          return colorByField.type === FieldType.string;
         },
       });
   })

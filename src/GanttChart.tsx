@@ -43,6 +43,8 @@ interface Props {
   sortOrder: any;
   colors?: Array<{ text: string; color: string }>;
 
+  showYAxis: boolean;
+
   experiments: any;
 }
 
@@ -62,6 +64,7 @@ export const GanttChart = ({
   sortBy,
   sortOrder,
   colors,
+  showYAxis,
 }: Props) => {
   const [group, setGroup] = useState<string>();
 
@@ -159,7 +162,7 @@ export const GanttChart = ({
   const widestLabel = d3.max(taskLabels.map((_) => measureText(_, theme.typography.size.sm)?.width ?? 0)) ?? 0;
 
   const padding = {
-    left: 10 + widestLabel,
+    left: 10 + (showYAxis ? widestLabel : 0),
     top: 0,
     bottom: 30 + (selectableGroups.length > 0 ? 40 : 0),
     right: 10,
@@ -351,7 +354,7 @@ export const GanttChart = ({
           <rect fill={theme.colors.text} opacity={0.1} pointerEvents="none" {...zoomWindow} />
         )}
 
-        {/* Axes */}
+        {/* X-axis */}
         <g
           transform={`translate(${padding.left}, ${height - (padding.top + padding.bottom)})`}
           ref={(node) => {
@@ -362,16 +365,20 @@ export const GanttChart = ({
             font-size: ${theme.typography.size.sm};
           `}
         />
-        <g
-          transform={`translate(${padding.left}, 0)`}
-          ref={(node) => {
-            d3.select(node).call(axisY as any);
-          }}
-          className={css`
-            font-family: ${theme.typography.fontFamily.sansSerif};
-            font-size: ${theme.typography.size.sm};
-          `}
-        />
+
+        {/* Y-axis */}
+        {showYAxis && (
+          <g
+            transform={`translate(${padding.left}, 0)`}
+            ref={(node) => {
+              d3.select(node).call(axisY as any);
+            }}
+            className={css`
+              font-family: ${theme.typography.fontFamily.sansSerif};
+              font-size: ${theme.typography.size.sm};
+            `}
+          />
+        )}
       </svg>
       {selectableGroups.length > 0 ? (
         <div className={styles.frameSelect}>

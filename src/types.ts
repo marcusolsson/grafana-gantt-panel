@@ -10,6 +10,7 @@ export interface GanttOptions {
   labelFields: string[];
   sortBy: SortBy;
   sortOrder: SortOrder;
+  showYAxis: boolean;
 
   colors?: Array<{ text: string; color: string }>;
 
