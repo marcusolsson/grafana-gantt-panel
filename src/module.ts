@@ -2,7 +2,6 @@ import { FieldType, PanelPlugin } from '@grafana/data';
 import { GanttOptions } from './types';
 import { GanttPanel } from './GanttPanel';
 import { FieldSelectEditor, getPanelPluginOrFallback } from 'grafana-plugin-support';
-import { LegendDisplayMode } from '@grafana/ui';
 import { ColorEditor } from './ColorEditor';
 
 export const plugin = getPanelPluginOrFallback(
