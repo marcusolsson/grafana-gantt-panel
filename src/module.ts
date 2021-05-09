@@ -66,7 +66,7 @@ export const plugin = getPanelPluginOrFallback(
         id: 'colorByField',
         path: 'colorByField',
         name: 'Color by',
-        description: 'Field to use for colors.',
+        description: 'Field to use for colors. Defaults to the text field.',
         editor: FieldSelectEditor,
         category: ['Dimensions'],
         settings: {
