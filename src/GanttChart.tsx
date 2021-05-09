@@ -76,6 +76,7 @@ export const GanttChart = ({
 
   // Zoom state
   const [dragging, setDragging] = useState(false);
+  const [isMouseDown, setMouseDown] = useState(false);
   const [coordinates, setCoordinates] = useState<Point>({ x: 0, y: 0 });
   const [origin, setOrigin] = useState<Point>({ x: 0, y: 0 });
 
@@ -225,9 +226,9 @@ export const GanttChart = ({
   const axisY = d3.axisLeft(scaleY);
 
   const zoomWindow = {
-    x: origin.x + (coordinates.x < 0 ? coordinates.x : 0),
+    x: origin.x + (coordinates.x - origin.x < 0 ? coordinates.x - origin.x : 0),
     y: 0,
-    width: Math.abs(coordinates.x),
+    width: Math.abs(coordinates.x - origin.x),
     height: height - padding.bottom,
   };
 
@@ -241,45 +242,41 @@ export const GanttChart = ({
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
         onMouseDown={(e) => {
-          if (!absoluteMode) {
-            return;
+          setMouseDown(true);
+
+          const coord = coordClientToViewbox({ x: e.clientX, y: e.clientY });
+
+          if (coord) {
+            setOrigin(coord);
           }
-
-          const pt = coordClientToViewbox({ x: e.clientX, y: e.clientY });
-
-          if (pt) {
-            setOrigin(pt);
-          }
-
-          setDragging(true);
         }}
         onMouseMove={(e) => {
-          if (!absoluteMode) {
-            return;
-          }
+          const coord = coordClientToViewbox({ x: e.clientX, y: e.clientY });
 
-          if (dragging) {
-            const pt = coordClientToViewbox({ x: e.clientX - origin.x, y: e.clientY - origin.y });
+          if (coord) {
+            setCoordinates(coord);
 
-            if (pt) {
-              setCoordinates(pt);
+            if (isMouseDown && absoluteMode) {
+              const distance = Math.sqrt(Math.pow(origin.x - coord.x, 2) + Math.pow(origin.y - coord.y, 2));
+              if (distance > 5) {
+                setDragging(true);
+              }
             }
           }
         }}
         onMouseUp={() => {
-          if (!absoluteMode) {
-            return;
+          setMouseDown(false);
+
+          if (dragging && absoluteMode) {
+            // We use onChangeTimeRange updates the time interval for the
+            // dashboard.
+            onChangeTimeRange({
+              from: invertedScaleX(zoomWindow.x - padding.left),
+              to: invertedScaleX(zoomWindow.x + zoomWindow.width - padding.left),
+            });
+
+            setDragging(false);
           }
-
-          setCoordinates({ x: 0, y: 0 });
-          setDragging(false);
-
-          // We use onChangeTimeRange updates the time interval for the
-          // dashboard.
-          onChangeTimeRange({
-            from: invertedScaleX(zoomWindow.x - padding.left),
-            to: invertedScaleX(zoomWindow.x + zoomWindow.width - padding.left),
-          });
         }}
       >
         {/* Task bars */}
@@ -350,7 +347,9 @@ export const GanttChart = ({
         </g>
 
         {/* Zoom window */}
-        {absoluteMode && <rect fill={'#ffffff'} opacity={0.1} {...zoomWindow} />}
+        {absoluteMode && dragging && (
+          <rect fill={theme.colors.text} opacity={0.1} pointerEvents="none" {...zoomWindow} />
+        )}
 
         {/* Axes */}
         <g
