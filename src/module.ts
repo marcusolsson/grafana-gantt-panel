@@ -2,6 +2,7 @@ import { FieldType, PanelPlugin } from '@grafana/data';
 import { GanttOptions } from './types';
 import { GanttPanel } from './GanttPanel';
 import { FieldSelectEditor, getPanelPluginOrFallback } from 'grafana-plugin-support';
+import { ColorEditor } from './ColorEditor';
 
 export const plugin = getPanelPluginOrFallback(
   'marcusolsson-gantt-panel',
@@ -61,6 +62,17 @@ export const plugin = getPanelPluginOrFallback(
         },
       })
       .addCustomEditor({
+        id: 'colorByField',
+        path: 'colorByField',
+        name: 'Color by',
+        description: 'Field to use for colors. Defaults to the text field.',
+        editor: FieldSelectEditor,
+        category: ['Dimensions'],
+        settings: {
+          filterByType: [FieldType.string, FieldType.number],
+        },
+      })
+      .addCustomEditor({
         id: 'groupByField',
         path: 'groupByField',
         name: 'Group by',
@@ -80,6 +92,36 @@ export const plugin = getPanelPluginOrFallback(
         editor: FieldSelectEditor,
         settings: {
           multi: true,
+        },
+      })
+      .addCustomEditor({
+        id: 'colors',
+        path: 'colors',
+        name: 'Color mappings',
+        editor: ColorEditor,
+        showIf: (options, data) => {
+          // This function duplicates the logic in GanttPanel to figure out
+          // whether the Color by dimension is a string.
+
+          if (!data || !data.length) {
+            return false;
+          }
+
+          const frame = data[0];
+
+          const textField = options.textField
+            ? frame.fields.find((f) => f.name === options.textField)
+            : frame.fields.find((f) => f.type === FieldType.string);
+
+          const colorByField = options.colorByField
+            ? frame.fields.find((f) => f.name === options.colorByField)
+            : textField;
+
+          if (!colorByField) {
+            return false;
+          }
+
+          return colorByField.type === FieldType.string;
         },
       })
       .addSelect({

@@ -25,15 +25,15 @@
   "dependencies": {
     "@tippyjs/react": "^4.1.0",
     "@types/humanize-duration": "^3.18.1",
+    "dayjs": "^1.10.4",
     "grafana-plugin-support": "0.3.0-alpha.4",
     "humanize-duration": "^3.25.1",
-    "moment-duration-format": "^2.3.2",
-    "dayjs": "^1.10.4"
+    "moment-duration-format": "^2.3.2"
   },
   "devDependencies": {
-    "@grafana/data": "^7.3.0",
-    "@grafana/toolkit": "^7.3.0",
-    "@grafana/ui": "^7.3.0",
+    "@grafana/data": "latest",
+    "@grafana/toolkit": "latest",
+    "@grafana/ui": "latest",
     "@types/d3": "^6.2.0",
     "@types/moment-duration-format": "^2.2.2",
     "emotion": "10.0.27"

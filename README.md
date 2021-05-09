@@ -31,13 +31,14 @@ By enabling experiments, you can try out new features that we're working on. **E
 
 #### Dimensions
 
-| Option | Description |
-|--------|-------------|
-| _Text_ | Name of the field to use for task labels. Defaults to the first string field. |
-| _Start time_ | Name of the field to use for value. Defaults to the first time field. |
-| _End time_ | Name of the field to use for value. Defaults to the second time field. |
-| _Group by_ | Name of the field to use to group tasks. When grouping tasks, the time interval is set to the start of the first task and the end of the last task in the group. |
-| _Labels_ | Fields to use as labels in the tooltip. |
+| Option       | Description                                                                                                                                                                                                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Text_       | Name of the field to use for task labels. Defaults to the first string field.                                                                                                                                                                                                                     |
+| _Start time_ | Name of the field to use for value. Defaults to the first time field.                                                                                                                                                                                                                             |
+| _End time_   | Name of the field to use for value. Defaults to the second time field.                                                                                                                                                                                                                            |
+| _Color by_   | Field to use for colors. Defaults to the text field. Color configuration depends on the field type. If the dimension is set to a string field, you can add _color mappings_ for each value. If the dimension is set to a number field, you can instead use field options to configure the colors. |
+| _Group by_   | Name of the field to use to group tasks. When grouping tasks, the time interval is set to the start of the first task and the end of the last task in the group.                                                                                                                                  |
+| _Labels_     | Fields to use as labels in the tooltip.                                                                                                                                                                                                                                                           |
 
 As some data sources don't yet support time fields, the plugin supports selecting string and number fields as start and end time:
 
@@ -46,7 +47,7 @@ As some data sources don't yet support time fields, the plugin supports selectin
 
 #### Display
 
-| Option | Description |
-|--------|-------------|
-| _Sort by_ | Dimension to sort tasks by. |
+| Option       | Description                       |
+|--------------|-----------------------------------|
+| _Sort by_    | Dimension to sort tasks by.       |
 | _Sort order_ | Order in which to sort the tasks. |
