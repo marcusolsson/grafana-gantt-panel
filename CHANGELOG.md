@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0 (2021-05-09)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.6.1...v0.7.0)
+
+### Enhancements
+
+- Color support: You can now configure colors based on text and number fields. Unfortunately, **this bumps the minimum required Grafana version to 7.3.0** ([#26](https://github.com/marcusolsson/grafana-gantt-panel/pull/26))
+- Support for data links ([#25](https://github.com/marcusolsson/grafana-gantt-panel/issues/25))
+- Improved zoom support
+- Option to not display y axis labels ([#30](https://github.com/marcusolsson/grafana-gantt-panel/issues/30))
+- Limit task bar height ([#22](https://github.com/marcusolsson/grafana-gantt-panel/pull/22)) (thanks @ymmt07039)
+
+
 ## 0.6.1 (2021-03-07)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.6.0...v0.6.1)
