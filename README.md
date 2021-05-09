@@ -49,7 +49,7 @@ As some data sources don't yet support time fields, the plugin supports selectin
 
 | Option           | Description                                                                        |
 |------------------|------------------------------------------------------------------------------------|
-| _Show Y-axis     | Toggles the Y-axis.                                                                |
+| _Show Y-axis_    | Toggles the Y-axis.                                                                |
 | _Sort by_        | Dimension to sort tasks by.                                                        |
 | _Sort order_     | Order in which to sort the tasks.                                                  |
 | _Color mappings_ | Configures task color based on the text value based on the **Color by** dimension. |
