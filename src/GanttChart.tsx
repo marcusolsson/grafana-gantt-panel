@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import * as d3 from 'd3';
-import Tippy from '@tippyjs/react';
 import humanizeDuration from 'humanize-duration';
 
 import {
@@ -18,6 +17,7 @@ import { measureText, getFormattedDisplayValue } from 'grafana-plugin-support';
 import { css } from 'emotion';
 import dayjs from 'dayjs';
 import { labelColor } from './helpers';
+import { GanttTask } from './GanttTask';
 
 type Point = {
   x: number;
@@ -301,7 +301,7 @@ export const GanttChart = ({
 
             const taskBarPos = {
               x: pixelStartX + padding.left,
-              y: scaleY(label),
+              y: scaleY(label) ?? 0,
             };
 
             const tooltipContent = (
@@ -335,24 +335,16 @@ export const GanttChart = ({
               : 'black';
 
             return (
-              <Tippy
-                maxWidth={500}
-                content={tooltipContent}
+              <GanttTask
                 key={i}
-                placement="bottom"
-                animation={false}
-                className={styles.tooltip.root}
-              >
-                <rect
-                  fill={fillColor}
-                  x={taskBarPos.x}
-                  y={taskBarPos.y}
-                  width={taskBarWidth}
-                  height={taskBarHeight}
-                  rx={theme.border.radius.sm}
-                  ry={theme.border.radius.sm}
-                />
-              </Tippy>
+                x={taskBarPos.x}
+                y={taskBarPos.y}
+                width={taskBarWidth}
+                height={taskBarHeight}
+                color={fillColor}
+                tooltip={tooltipContent}
+                links={textField.getLinks!({ valueRowIndex: i })}
+              />
             );
           })}
         </g>
