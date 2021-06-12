@@ -1,8 +1,8 @@
 import { FieldType, PanelPlugin } from '@grafana/data';
-import { GanttOptions } from './types';
-import { GanttPanel } from './GanttPanel';
 import { FieldSelectEditor, getPanelPluginOrFallback } from 'grafana-plugin-support';
 import { ColorEditor } from './ColorEditor';
+import { GanttPanel } from './GanttPanel';
+import { GanttOptions } from './types';
 
 export const plugin = getPanelPluginOrFallback(
   'marcusolsson-gantt-panel',

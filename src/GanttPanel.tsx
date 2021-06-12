@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { FieldType, PanelProps } from '@grafana/data';
-
-import { GanttOptions } from './types';
-import { toTimeField, PanelWizard } from 'grafana-plugin-support';
 import { GanttChart } from 'GanttChart';
+import { PanelWizard, toTimeField } from 'grafana-plugin-support';
+import React from 'react';
+import { GanttOptions } from './types';
 
 const usage = {
   schema: [

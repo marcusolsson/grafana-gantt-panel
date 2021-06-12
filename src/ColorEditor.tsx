@@ -1,7 +1,7 @@
-import React, { FormEvent } from 'react';
 import { StandardEditorProps } from '@grafana/data';
-import { Button, Input, ColorPicker, Icon, useTheme } from '@grafana/ui';
+import { Button, ColorPicker, Icon, Input, useTheme } from '@grafana/ui';
 import { css } from 'emotion';
+import React, { FormEvent } from 'react';
 
 interface ColorMapping {
   text: string;

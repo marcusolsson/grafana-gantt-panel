@@ -1,7 +1,3 @@
-import React, { useState, useRef } from 'react';
-import * as d3 from 'd3';
-import humanizeDuration from 'humanize-duration';
-
 import {
   AbsoluteTimeRange,
   dateTimeFormat,
@@ -12,12 +8,14 @@ import {
   TimeRange,
 } from '@grafana/data';
 import { Badge, graphTimeFormat, Select, stylesFactory, useTheme } from '@grafana/ui';
-
-import { measureText, getFormattedDisplayValue } from 'grafana-plugin-support';
-import { css } from 'emotion';
+import * as d3 from 'd3';
 import dayjs from 'dayjs';
-import { labelColor } from './helpers';
+import { css } from 'emotion';
+import { getFormattedDisplayValue, measureText } from 'grafana-plugin-support';
+import humanizeDuration from 'humanize-duration';
+import React, { useRef, useState } from 'react';
 import { GanttTask } from './GanttTask';
+import { labelColor } from './helpers';
 
 type Point = {
   x: number;

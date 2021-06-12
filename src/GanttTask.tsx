@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import Tippy from '@tippyjs/react';
-
 import { Field, GrafanaTheme, LinkModel } from '@grafana/data';
 import { ContextMenu, MenuItem, MenuItemsGroup, stylesFactory, useTheme } from '@grafana/ui';
-
+import Tippy from '@tippyjs/react';
 import { css } from 'emotion';
+import React, { useState } from 'react';
 
 interface Props {
   x: number;
