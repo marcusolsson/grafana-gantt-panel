@@ -31,9 +31,9 @@
     "moment-duration-format": "^2.3.2"
   },
   "devDependencies": {
-    "@grafana/data": "latest",
-    "@grafana/toolkit": "latest",
-    "@grafana/ui": "latest",
+    "@grafana/data": "7.5.7",
+    "@grafana/toolkit": "7.5.7",
+    "@grafana/ui": "7.5.7",
     "@types/d3": "^6.2.0",
     "@types/moment-duration-format": "^2.2.2",
     "emotion": "10.0.27"
