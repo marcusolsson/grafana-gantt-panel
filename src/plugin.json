@@ -2,9 +2,8 @@
   "type": "panel",
   "name": "Gantt",
   "id": "marcusolsson-gantt-panel",
-
   "info": {
-    "description": "Gantt visualization for Grafana",
+    "description": "Tasks and processes over time",
     "author": {
       "name": "Marcus Olsson"
     },
