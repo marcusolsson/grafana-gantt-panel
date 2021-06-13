@@ -18,10 +18,8 @@
       { "name": "License", "url": "https://github.com/marcusolsson/grafana-gantt-panel/blob/main/LICENSE" }
     ],
     "screenshots": [
-      {
-        "name": "Gantt",
-        "path": "img/screenshot.png"
-      }
+      { "name": "Gantt (Dark)", "path": "img/dark.png" },
+      { "name": "Gantt (Light)", "path": "img/light.png" }
     ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
