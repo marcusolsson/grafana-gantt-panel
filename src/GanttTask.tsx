@@ -1,5 +1,5 @@
 import { Field, GrafanaTheme, LinkModel } from '@grafana/data';
-import { ContextMenu, MenuItem, MenuItemsGroup, stylesFactory, useTheme } from '@grafana/ui';
+import { ContextMenu, MenuItemsGroup, stylesFactory, useTheme } from '@grafana/ui';
 import Tippy from '@tippyjs/react';
 import { css } from 'emotion';
 import React, { useState } from 'react';
@@ -46,7 +46,7 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
             );
             setContextMenuGroups([
               {
-                items: links.map<MenuItem>((link) => {
+                items: links.map((link) => {
                   return {
                     label: link.title,
                     url: link.href,
@@ -54,7 +54,7 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
                     icon: link.target === '_self' ? 'link' : 'external-link-alt',
                     onClick: link.onClick,
                   };
-                }),
+                }) as any,
               },
             ]);
           }}

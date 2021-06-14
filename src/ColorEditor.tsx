@@ -1,3 +1,4 @@
+import {} from '@emotion/core';
 import { StandardEditorProps } from '@grafana/data';
 import { Button, ColorPicker, Icon, Input, useTheme } from '@grafana/ui';
 import { css } from 'emotion';

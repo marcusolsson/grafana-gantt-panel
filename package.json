@@ -28,12 +28,14 @@
     "dayjs": "^1.10.4",
     "grafana-plugin-support": "0.3.0-alpha.4",
     "humanize-duration": "^3.25.1",
-    "moment-duration-format": "^2.3.2"
+    "moment-duration-format": "^2.3.2",
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@grafana/data": "7.5.7",
-    "@grafana/toolkit": "7.5.7",
-    "@grafana/ui": "7.5.7",
+    "@emotion/core": "10.0.27",
+    "@grafana/data": "8.0.1",
+    "@grafana/toolkit": "8.0.1",
+    "@grafana/ui": "8.0.1",
     "@types/d3": "^6.2.0",
     "@types/moment-duration-format": "^2.2.2",
     "emotion": "10.0.27"
