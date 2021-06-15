@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.7.1 (2021-06-15)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.0...v0.7.1)
+
+### Enhancements
+
+- Nothing plotted when too many values on y axis ([#32](https://github.com/marcusolsson/grafana-gantt-panel/issues/32))
+- Metadata and docs updates
+- Upgrade dependencies
+
 ## 0.7.0 (2021-05-09)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.6.1...v0.7.0)
