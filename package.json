@@ -26,7 +26,7 @@
     "@tippyjs/react": "^4.1.0",
     "@types/humanize-duration": "^3.18.1",
     "dayjs": "^1.10.4",
-    "grafana-plugin-support": "0.3.0-alpha.4",
+    "grafana-plugin-support": "0.4.0",
     "humanize-duration": "^3.25.1",
     "moment-duration-format": "^2.3.2",
     "tslib": "^2.3.0"
