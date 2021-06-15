@@ -233,6 +233,20 @@ export const GanttChart = ({
     height: height - padding.bottom,
   };
 
+  const barPadding = 2;
+  const taskBarHeight = scaleY.bandwidth() - barPadding;
+
+  if (taskBarHeight < 5) {
+    return (
+      <div className="panel-empty">
+        <p>
+          Too many tasks to visualize properly. <br />
+          Update the query to return fewer tasks or increase the height of the panel.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <svg
@@ -293,9 +307,7 @@ export const GanttChart = ({
             const pixelStartX = startTimeValue ? Math.max(scaleX(startTime.toDate()), 0) : 0;
             const pixelEndX = endTimeValue ? Math.min(scaleX(endTime.toDate()), chartWidth) : chartWidth;
 
-            const barPadding = 2;
             const taskBarWidth = Math.max(pixelEndX - pixelStartX - 2, 1);
-            const taskBarHeight = scaleY.bandwidth() - barPadding;
 
             const taskBarPos = {
               x: pixelStartX + padding.left,
