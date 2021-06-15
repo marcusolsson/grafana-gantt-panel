@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2 (2021-06-15)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.1...v0.7.2)
+
+### Enhancements
+
+- Upgrade grafana-plugin-support dependency
+
 ## 0.7.1 (2021-06-15)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.0...v0.7.1)
