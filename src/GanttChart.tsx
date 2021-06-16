@@ -138,6 +138,7 @@ export const GanttChart = ({
     return (
       isWithinTimeRange(start) ||
       isWithinTimeRange(end) ||
+      (start.isBefore(from) && end.isAfter(to)) ||
       // If Lock to extents is enabled, all tasks should be visible.
       (experiments.enabled && experiments.lockToExtents)
     );
