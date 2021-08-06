@@ -1,4 +1,5 @@
 import { FieldType, PanelProps } from '@grafana/data';
+import { useTheme } from '@grafana/ui';
 import { GanttChart } from 'GanttChart';
 import { PanelWizard, toTimeField } from 'grafana-plugin-support';
 import React from 'react';
@@ -24,6 +25,8 @@ export const GanttPanel: React.FC<Props> = ({
   onChangeTimeRange,
   timeZone,
 }) => {
+  const theme = useTheme();
+
   const { colors } = options;
 
   // TODO: Support multiple data frames.
@@ -49,13 +52,16 @@ export const GanttPanel: React.FC<Props> = ({
     options.startField
       ? frame.fields.find((f) => f.name === options.startField)
       : frame.fields.find((f) => f.type === FieldType.time),
-    timeZone
+    timeZone,
+    theme
   );
 
   const endField = toTimeField(
     options.endField
       ? frame.fields.find((f) => f.name === options.endField)
-      : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time)
+      : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time),
+    timeZone,
+    theme
   );
 
   // Make sure that all fields have been configured before we continue.
