@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.3 (2021-08-06)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.2...v0.7.3)
+
+### Bug fixes
+
+- Cannot read property 'visualization' of undefined ([#38](https://github.com/marcusolsson/grafana-gantt-panel/issues/38))
+
 ## 0.7.2 (2021-06-15)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.1...v0.7.2)
@@ -29,7 +37,6 @@
 - Improved zoom support
 - Option to not display y axis labels ([#30](https://github.com/marcusolsson/grafana-gantt-panel/issues/30))
 - Limit task bar height ([#22](https://github.com/marcusolsson/grafana-gantt-panel/pull/22)) (thanks @ymmt07039)
-
 
 ## 0.6.1 (2021-03-07)
 
@@ -68,7 +75,7 @@ Adds a new Experiments category with two new features: _Lock to extents_ and _Re
 ### Enhancements
 
 - Add labels to tooltip ([#9](https://github.com/marcusolsson/grafana-gantt-panel/issues/9))
-- Click-and-drag to change dashboard time interval  ([#10](https://github.com/marcusolsson/grafana-gantt-panel/issues/10))
+- Click-and-drag to change dashboard time interval ([#10](https://github.com/marcusolsson/grafana-gantt-panel/issues/10))
 
 ## 0.3.1 (2021-02-02)
 
