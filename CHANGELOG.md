@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.4 (2021-09-05)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.3...v0.7.4)
+
+### Bug fixes
+
+- Fix Data Links in Grafana 8.0 ([#49](https://github.com/marcusolsson/grafana-gantt-panel/issues/49))
+
 ## 0.7.3 (2021-08-06)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.2...v0.7.3)
