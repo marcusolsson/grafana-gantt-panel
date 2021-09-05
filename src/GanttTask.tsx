@@ -1,9 +1,9 @@
-import { Field, GrafanaTheme, LinkModel } from '@grafana/data';
-import { stylesFactory, useTheme } from '@grafana/ui';
-import Tippy from '@tippyjs/react';
+import { Field, LinkModel } from '@grafana/data';
+import { useTheme } from '@grafana/ui';
 import { css } from 'emotion';
 import React, { useState } from 'react';
 import { ContextMenu, MenuGroup } from './ContextMenu';
+import { Tooltip } from './Tooltip';
 
 interface Props {
   x: number;
@@ -17,7 +17,6 @@ interface Props {
 
 export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props) => {
   const theme = useTheme();
-  const styles = getStyles(theme);
 
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
   const [contextMenuLabel, setContextMenuLabel] = useState<React.ReactNode | string>('');
@@ -35,7 +34,7 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
           renderMenuItems={() => contextMenuGroups.filter((item) => item.items.length)}
         />
       )}
-      <Tippy maxWidth={500} content={tooltip} placement="bottom" animation={false} className={styles.tooltip}>
+      <Tooltip content={tooltip}>
         <g
           className={css`
             cursor: pointer;
@@ -79,18 +78,7 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
             ry={theme.border.radius.sm}
           />
         </g>
-      </Tippy>
+      </Tooltip>
     </>
   );
 };
-
-const getStyles = stylesFactory((theme: GrafanaTheme) => {
-  return {
-    tooltip: css`
-      border-radius: ${theme.border.radius.md};
-      background-color: ${theme.colors.bg2};
-      padding: ${theme.spacing.sm};
-      box-shadow: 0px 0px 20px ${theme.colors.dropdownShadow};
-    `,
-  };
-});
