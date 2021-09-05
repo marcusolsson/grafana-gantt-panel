@@ -9,6 +9,9 @@ interface Props {
   children?: React.ReactElement<any>;
 }
 
+/**
+ * Tooltip encapsulates Tippy into a API similar to the Grafana Tooltip.
+ */
 export const Tooltip = ({ content, children }: Props) => {
   const theme = useTheme();
   const styles = getStyles(theme);
