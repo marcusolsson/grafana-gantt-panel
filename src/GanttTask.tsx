@@ -1,8 +1,9 @@
 import { Field, GrafanaTheme, LinkModel } from '@grafana/data';
-import { ContextMenu, MenuItem, MenuItemsGroup, stylesFactory, useTheme } from '@grafana/ui';
+import { stylesFactory, useTheme } from '@grafana/ui';
 import Tippy from '@tippyjs/react';
 import { css } from 'emotion';
 import React, { useState } from 'react';
+import { ContextMenu, MenuGroup } from './ContextMenu';
 
 interface Props {
   x: number;
@@ -20,13 +21,20 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
 
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
   const [contextMenuLabel, setContextMenuLabel] = useState<React.ReactNode | string>('');
-  const [contextMenuGroups, setContextMenuGroups] = useState<MenuItemsGroup[]>([]);
+  const [contextMenuGroups, setContextMenuGroups] = useState<MenuGroup[]>([]);
   const [showContextMenu, setShowContextMenu] = useState(false);
 
   return (
     <>
-      {showContextMenu &&
-        renderContextMenu(contextMenuPos, contextMenuLabel, contextMenuGroups, () => setShowContextMenu(false))}
+      {showContextMenu && (
+        <ContextMenu
+          x={contextMenuPos.x}
+          y={contextMenuPos.y}
+          onClose={() => setShowContextMenu(false)}
+          renderHeader={() => contextMenuLabel}
+          renderMenuItems={() => contextMenuGroups.filter((item) => item.items.length)}
+        />
+      )}
       <Tippy maxWidth={500} content={tooltip} placement="bottom" animation={false} className={styles.tooltip}>
         <g
           className={css`
@@ -46,9 +54,11 @@ export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props)
             );
             setContextMenuGroups([
               {
-                items: links.map<MenuItem>((link) => {
+                label: 'Data links',
+                items: links.map((link) => {
                   return {
                     label: link.title,
+                    ariaLabel: link.title,
                     url: link.href,
                     target: link.target,
                     icon: link.target === '_self' ? 'link' : 'external-link-alt',
@@ -84,20 +94,3 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
     `,
   };
 });
-
-const renderContextMenu = (
-  pos: { x: number; y: number },
-  label: React.ReactNode | string,
-  items: MenuItemsGroup[],
-  onClose: () => void
-) => {
-  const contextContentProps = {
-    x: pos.x,
-    y: pos.y,
-    onClose,
-    items,
-    renderHeader: () => label,
-  };
-
-  return <ContextMenu {...contextContentProps} />;
-};
