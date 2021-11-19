@@ -329,7 +329,7 @@ export const GanttChart = ({
                 </div>
                 <div>
                   {labelFields
-                    .filter((field) => field?.values.get(i))
+                    .filter((field) => field?.values.get(i) !== undefined && field?.values.get(i) !== null)
                     .map((field) => field?.display!(field?.values.get(i)))
                     .map(getFormattedDisplayValue)
                     .map((label, key) => (
