@@ -118,7 +118,7 @@ export const GanttChart = ({
 
   const currentGroup = group ?? (selectableGroups.length > 0 ? selectableGroups[0].value : undefined);
 
-  const absoluteMode = experiments.enabled ? !experiments.lockToExtents : currentGroup === undefined;
+  const absoluteMode = experiments && experiments.enabled ? !experiments.lockToExtents : currentGroup === undefined;
 
   const indexes =
     selectableGroups.length > 0 && currentGroup
@@ -140,7 +140,7 @@ export const GanttChart = ({
       isWithinTimeRange(end) ||
       (start.isBefore(from) && end.isAfter(to)) ||
       // If Lock to extents is enabled, all tasks should be visible.
-      (experiments.enabled && experiments.lockToExtents)
+      (experiments && experiments.enabled && experiments.lockToExtents)
     );
   });
 
@@ -188,7 +188,7 @@ export const GanttChart = ({
 
   // Scale for converting from time to pixel.
   const getExtents = (): [Date, Date] => {
-    if (experiments.enabled) {
+    if (experiments && experiments.enabled) {
       if (experiments.lockToExtents) {
         return [timeExtents[0].toDate(), timeExtents[1].toDate()];
       }
@@ -212,7 +212,7 @@ export const GanttChart = ({
 
   const scaleY = d3.scaleBand().domain(taskLabels).range([0, chartHeight]).padding(scalePadding);
   const axisX = d3.axisBottom(scaleX).tickFormat((d) => {
-    if (experiments.enabled && experiments.relativeXAxis) {
+    if (experiments && experiments.enabled && experiments.relativeXAxis) {
       const duration = (d as number) - timeExtents[0].valueOf();
       if (duration < 0) {
         return '';
