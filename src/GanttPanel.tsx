@@ -11,7 +11,7 @@ const usage = {
     { type: FieldType.time, description: 'Task start time' },
     { type: FieldType.time, description: 'Task end time' },
   ],
-  url: 'https://github.com/marcusolsson/grafana-gantt-panel',
+  url: 'https://github.com/marcusolsson/grafana-gantt-panel?source=Grafana',
 };
 
 interface Props extends PanelProps<GanttOptions> {}
