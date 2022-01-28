@@ -1,6 +1,6 @@
+import { css } from '@emotion/css';
 import { Field, LinkModel } from '@grafana/data';
-import { useTheme } from '@grafana/ui';
-import { css } from 'emotion';
+import { useTheme2 } from '@grafana/ui';
 import React, { useState } from 'react';
 import { ContextMenu, MenuGroup } from './ContextMenu';
 import { Tooltip } from './Tooltip';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const GanttTask = ({ x, y, width, height, color, tooltip, links }: Props) => {
-  const theme = useTheme();
+  const theme = useTheme2().v1;
 
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
   const [contextMenuLabel, setContextMenuLabel] = useState<React.ReactNode | string>('');

@@ -1,5 +1,5 @@
 import { FieldType, PanelProps } from '@grafana/data';
-import { useTheme } from '@grafana/ui';
+import { useTheme2 } from '@grafana/ui';
 import { GanttChart } from 'GanttChart';
 import { PanelWizard, toTimeField } from 'grafana-plugin-support';
 import React from 'react';
@@ -25,7 +25,7 @@ export const GanttPanel: React.FC<Props> = ({
   onChangeTimeRange,
   timeZone,
 }) => {
-  const theme = useTheme();
+  const theme = useTheme2().v1;
 
   const { colors } = options;
 

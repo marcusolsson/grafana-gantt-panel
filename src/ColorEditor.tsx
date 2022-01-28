@@ -1,7 +1,6 @@
-import {} from '@emotion/core';
+import { css } from '@emotion/css';
 import { StandardEditorProps } from '@grafana/data';
-import { Button, ColorPicker, Icon, Input, useTheme } from '@grafana/ui';
-import { css } from 'emotion';
+import { Button, ColorPicker, Icon, Input, useTheme2 } from '@grafana/ui';
 import React, { FormEvent } from 'react';
 
 interface ColorMapping {
@@ -13,8 +12,8 @@ interface Settings {}
 
 interface Props extends StandardEditorProps<ColorMapping[], Settings> {}
 
-export const ColorEditor: React.FC<Props> = ({ item, value, onChange, context }) => {
-  const theme = useTheme();
+export const ColorEditor: React.FC<Props> = ({ value, onChange }) => {
+  const theme = useTheme2().v1;
 
   const colors = value || [];
 

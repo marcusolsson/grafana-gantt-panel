@@ -1,16 +1,16 @@
+import { css } from '@emotion/css';
 import {
   AbsoluteTimeRange,
   dateTimeFormat,
   Field,
   FieldType,
-  GrafanaTheme,
+  GrafanaTheme2,
   SelectableValue,
   TimeRange,
 } from '@grafana/data';
-import { Badge, graphTimeFormat, Select, stylesFactory, useTheme } from '@grafana/ui';
+import { Badge, graphTimeFormat, Select, useStyles2, useTheme2 } from '@grafana/ui';
 import * as d3 from 'd3';
 import dayjs from 'dayjs';
-import { css } from 'emotion';
 import { getFormattedDisplayValue, measureText } from 'grafana-plugin-support';
 import humanizeDuration from 'humanize-duration';
 import React, { useRef, useState } from 'react';
@@ -66,8 +66,8 @@ export const GanttChart = ({
 }: Props) => {
   const [group, setGroup] = useState<string>();
 
-  const theme = useTheme();
-  const styles = getStyles(theme);
+  const theme = useTheme2().v1;
+  const styles = useStyles2(getStyles);
 
   const onGroupChange = (selectableValue: SelectableValue<string>) => {
     setGroup(selectableValue.value);
@@ -404,46 +404,44 @@ const isBetween = (from: dayjs.Dayjs, to: dayjs.Dayjs) => (date: dayjs.Dayjs) =>
   return !(date.isBefore(from) || date.isAfter(to));
 };
 
-const getStyles = stylesFactory((theme: GrafanaTheme) => {
-  return {
-    svg: css`
-      flex: 1;
-    `,
+const getStyles = (theme: GrafanaTheme2) => ({
+  svg: css`
+    flex: 1;
+  `,
+  root: css`
+    display: flex;
+    flex-direction: column;
+  `,
+  frameSelect: css``,
+  tooltip: {
     root: css`
-      display: flex;
-      flex-direction: column;
+      border-radius: ${theme.v1.border.radius.md};
+      background-color: ${theme.v1.colors.bg2};
+      padding: ${theme.v1.spacing.sm};
+      box-shadow: 0px 0px 20px ${theme.v1.colors.dropdownShadow};
     `,
-    frameSelect: css``,
-    tooltip: {
-      root: css`
-        border-radius: ${theme.border.radius.md};
-        background-color: ${theme.colors.bg2};
-        padding: ${theme.spacing.sm};
-        box-shadow: 0px 0px 20px ${theme.colors.dropdownShadow};
-      `,
-      header: css`
-        font-weight: ${theme.typography.weight.semibold};
-        font-size: ${theme.typography.size.md};
-        margin-bottom: ${theme.spacing.sm};
-        color: ${theme.colors.text};
-      `,
-      value: css`
-        font-size: ${theme.typography.size.md};
-        margin-bottom: ${theme.spacing.xs};
-      `,
-      faint: css`
-        font-size: ${theme.typography.size.md};
-        margin-bottom: ${theme.spacing.xs};
-        color: ${theme.colors.textSemiWeak};
-      `,
-      badge: css`
-        margin-right: ${theme.spacing.xs};
-        &:last-child {
-          margin-right: 0;
-        }
-        overflow: hidden;
-        max-width: 100%;
-      `,
-    },
-  };
+    header: css`
+      font-weight: ${theme.v1.typography.weight.semibold};
+      font-size: ${theme.v1.typography.size.md};
+      margin-bottom: ${theme.v1.spacing.sm};
+      color: ${theme.colors.text};
+    `,
+    value: css`
+      font-size: ${theme.typography.size.md};
+      margin-bottom: ${theme.v1.spacing.xs};
+    `,
+    faint: css`
+      font-size: ${theme.typography.size.md};
+      margin-bottom: ${theme.v1.spacing.xs};
+      color: ${theme.v1.colors.textSemiWeak};
+    `,
+    badge: css`
+      margin-right: ${theme.v1.spacing.xs};
+      &:last-child {
+        margin-right: 0;
+      }
+      overflow: hidden;
+      max-width: 100%;
+    `,
+  },
 });

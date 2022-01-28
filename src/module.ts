@@ -1,4 +1,4 @@
-import { FieldType, PanelPlugin } from '@grafana/data';
+import { Field, FieldType, PanelPlugin } from '@grafana/data';
 import { FieldSelectEditor, getPanelPluginOrFallback } from 'grafana-plugin-support';
 import { ColorEditor } from './ColorEditor';
 import { GanttPanel } from './GanttPanel';
@@ -27,6 +27,15 @@ export const plugin = getPanelPluginOrFallback(
         description: 'Displays the duration since the start of the first task.',
         category: ['Experiments'],
         showIf: (options) => options.experiments && options.experiments.enabled,
+      })
+      .addFieldNamePicker({
+        path: 'sizeByField',
+        name: 'Size by',
+        description: 'Field to use for size. Defaults to the first numeric field.',
+        category: ['Dimensions'],
+        settings: {
+          filter: (f: Field) => f.type === FieldType.number,
+        },
       })
       .addCustomEditor({
         id: 'textField',
