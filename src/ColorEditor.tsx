@@ -12,7 +12,7 @@ interface Settings {}
 
 interface Props extends StandardEditorProps<ColorMapping[], Settings> {}
 
-export const ColorEditor: React.FC<Props> = ({ value, onChange }) => {
+export const ColorEditor = ({ value, onChange }: Props) => {
   const theme = useTheme2().v1;
 
   const colors = value || [];

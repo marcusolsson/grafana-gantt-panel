@@ -4,10 +4,10 @@
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.5...v0.8.0)
 
-This release bumps the minimum required Grafana to >=8.0. Grafana 8 introduces a new theming engine for panel plugins.
+This release bumps the minimum required Grafana to >=8.1. Grafana 8 introduces a new theming engine for panel plugins.
 
 - If you're running a Grafana version before 8.0, you should stay with v0.7.5.
-- If you're running Grafana 8.0 or above, you should update to v0.8.0.
+- If you're running Grafana 8.1 or above, you should update to v0.8.0.
 
 ## 0.7.5 (2022-01-07)
 
