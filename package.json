@@ -1,6 +1,6 @@
 {
   "name": "marcusolsson-gantt-panel",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "A Gantt visualization for Grafana",
   "keywords": [
     "grafana",
@@ -32,10 +32,10 @@
   },
   "devDependencies": {
     "@emotion/css": "11.7.1",
-    "@grafana/data": "8.3.4",
-    "@grafana/runtime": "8.3.4",
-    "@grafana/toolkit": "8.3.4",
-    "@grafana/ui": "8.3.4",
+    "@grafana/data": "9.0.1",
+    "@grafana/runtime": "9.0.1",
+    "@grafana/toolkit": "9.0.1",
+    "@grafana/ui": "9.0.1",
     "@types/d3": "^6.2.0",
     "@types/moment-duration-format": "^2.2.2"
   },

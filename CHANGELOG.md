@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.1 (2022-06-28)
+
+[Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.8.0...v0.8.1)
+
+This releases updates the plugin to support Grafana 9.0.
+
 ## 0.8.0 (2022-01-28)
 
 [Full changelog](https://github.com/marcusolsson/grafana-gantt-panel/compare/v0.7.5...v0.8.0)

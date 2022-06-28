@@ -6,6 +6,9 @@
 [![Downloads](https://img.shields.io/badge/dynamic/json?logo=grafana&color=F47A20&label=downloads&query=%24.items%5B%3F%28%40.slug%20%3D%3D%20%22marcusolsson-gantt-panel%22%29%5D.downloads&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins)](https://grafana.com/grafana/plugins/marcusolsson-gantt-panel)
 [![License](https://img.shields.io/github/license/marcusolsson/grafana-gantt-panel)](LICENSE)
 [![Twitter](https://img.shields.io/twitter/follow/marcusolsson?color=%231DA1F2&label=twitter&style=plastic)](https://twitter.com/marcusolsson)
+![Maintenance](https://img.shields.io/maintenance/no/2022?style=plastic)
+
+> **Important:** As of July 2022, I'm no longer actively maintaining this plugin. If this plugin has been useful to you, consider switching to the [State timeline](https://grafana.com/docs/grafana/latest/visualizations/state-timeline/) core panel.
 
 A panel plugin for [Grafana](https://grafana.com) to visualize Gantt charts.
 
