@@ -1,4 +1,3 @@
-import { config } from '@grafana/runtime';
 import {
   ContextMenu as GrafanaContextMenu,
   MenuGroup as GrafanaMenuGroup,
@@ -6,8 +5,7 @@ import {
   MenuItemProps as GrafanaMenuItemProps,
 } from '@grafana/ui';
 import React from 'react';
-import { gte } from 'semver';
-import { LegacyContextMenu } from './LegacyContextMenu';
+
 
 export interface MenuGroup {
   label: string;
@@ -27,8 +25,6 @@ interface Props {
  * a legacy version on earlier versions of Grafana.
  */
 export const ContextMenu = ({ x, y, onClose, renderMenuItems, renderHeader }: Props) => {
-  const version = config.buildInfo.version;
-  if (gte(version, '8.0.0')) {
     return (
       <GrafanaContextMenu
         x={x}
@@ -46,9 +42,4 @@ export const ContextMenu = ({ x, y, onClose, renderMenuItems, renderHeader }: Pr
         renderHeader={renderHeader}
       />
     );
-  } else {
-    return (
-      <LegacyContextMenu x={x} y={y} onClose={onClose} renderMenuItems={renderMenuItems} renderHeader={renderHeader} />
-    );
   }
-};

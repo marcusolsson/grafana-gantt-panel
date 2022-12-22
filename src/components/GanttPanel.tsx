@@ -1,33 +1,38 @@
-import { FieldType, PanelProps } from '@grafana/data';
-import { useTheme2 } from '@grafana/ui';
-import { GanttChart } from 'GanttChart';
+
+import { GanttChart } from './GanttChart';
 import { PanelWizard, toTimeField } from 'grafana-plugin-support';
 import React from 'react';
-import { GanttOptions } from './types';
+import { FieldType, PanelProps } from '@grafana/data';
+import { GanttOptions } from 'types';
 
-const usage = {
-  schema: [
-    { type: FieldType.string, description: 'Task name' },
-    { type: FieldType.time, description: 'Task start time' },
-    { type: FieldType.time, description: 'Task end time' },
-  ],
-  url: 'https://github.com/marcusolsson/grafana-gantt-panel',
-};
 
 interface Props extends PanelProps<GanttOptions> {}
 
-export const GanttPanel: React.FC<Props> = ({
-  options,
-  data,
-  width,
-  height,
-  timeRange,
-  onChangeTimeRange,
-  timeZone,
-}) => {
-  const theme = useTheme2().v1;
+
+const usage = {
+    schema: [
+      { type: FieldType.string, description: 'Task name' },
+      { type: FieldType.time, description: 'Task start time' },
+      { type: FieldType.time, description: 'Task end time' },
+    ],
+    url: 'https://github.com/marcusolsson/grafana-gantt-panel',
+  };
+
+
+  export const GanttPanel: React.FC<Props> = ({
+    options,
+    data,
+    width,
+    height,
+    timeRange,
+    onChangeTimeRange,
+    timeZone,
+  }) =>
+  { 
+   
 
   const { colors } = options;
+
 
   // TODO: Support multiple data frames.
   const frame = data.series[0];
@@ -48,21 +53,23 @@ export const GanttPanel: React.FC<Props> = ({
     ? frame.fields.find((f) => f.name === options.textField)
     : frame.fields.find((f) => f.type === FieldType.string);
 
+
+
+
   const startField = toTimeField(
     options.startField
       ? frame.fields.find((f) => f.name === options.startField)
       : frame.fields.find((f) => f.type === FieldType.time),
-    timeZone,
-    theme
+    timeZone
   );
 
   const endField = toTimeField(
     options.endField
       ? frame.fields.find((f) => f.name === options.endField)
       : frame.fields.filter((f) => f !== startField).find((f) => f.type === FieldType.time),
-    timeZone,
-    theme
+    timeZone
   );
+
 
   // Make sure that all fields have been configured before we continue.
   if (!textField || !startField || !endField) {
@@ -83,12 +90,15 @@ export const GanttPanel: React.FC<Props> = ({
       </div>
     );
   }
+ 
+
 
   const colorByField = options.colorByField ? frame.fields.find((f) => f.name === options.colorByField) : textField;
 
   // Optional dimensions.
   const groupByField = frame.fields.find((f) => f.name === options.groupByField);
   const labelFields = options.labelFields?.map((_) => frame.fields.find((f) => f.name === _)) ?? [];
+
 
   return (
     <GanttChart
@@ -110,4 +120,8 @@ export const GanttPanel: React.FC<Props> = ({
       showYAxis={options.showYAxis}
     />
   );
+
+
 };
+
+
