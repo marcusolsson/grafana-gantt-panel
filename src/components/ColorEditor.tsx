@@ -88,3 +88,4 @@ export const ColorEditor = ({ value, onChange }: Props) => {
     </>
   );
 };
+
